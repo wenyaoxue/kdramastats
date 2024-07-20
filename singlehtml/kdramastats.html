@@ -159,6 +159,9 @@
     <select id="actordd" onchange="filteractors()">
         <option></option>
     </select>
+
+    Min Year <input type="number" >
+    Max Year <input type="number" >
     <table id="content"></table>
 
     <script>
@@ -235,24 +238,22 @@
                 kdrama.forEach((attr, i)=>{
                     let td = document.createElement("td")
                     if (i==FEM || i == MALE) {
-                        let div = document.createElement("div")
-                        div.classList.add("actor")
-                        div.innerHTML = attr
-                        div.onclick = () => {
+                        let btn = document.createElement("button")
+                        btn.innerHTML = attr
+                        btn.onclick = () => {
                             document.getElementById("actordd").value = attr
                             filteractors()
                         }
-                        td.appendChild(div)
+                        td.appendChild(btn)
                     } else if (i == SUP) {
                         attr.forEach((otherlead)=>{
-                            let div = document.createElement("div")
-                            div.classList.add("actor")
-                            div.innerHTML = otherlead
-                            div.onclick = () => {
+                            let btn = document.createElement("button")
+                            btn.innerHTML = otherlead
+                            btn.onclick = () => {
                                 document.getElementById("actordd").value = otherlead
                                 filteractors()
                             }
-                            td.appendChild(div)
+                            td.appendChild(btn)
                         })
                     } else {
                         let div = document.createElement("div")
@@ -263,6 +264,7 @@
                             div.ontouchstart  = () => {div.style.backgroundColor = "white"}
                             div.onmouseup = () => {div.style.backgroundColor = "black"}
                             div.ontouchend = () => {div.style.backgroundColor = "black"}
+                            div.onmouseleave = () => {div.style.backgroundColor = "black"}
                         }
                         td.appendChild(div)
                     }
