@@ -160,8 +160,20 @@
         <option></option>
     </select>
 
-    Min Year <input type="number" >
-    Max Year <input type="number" >
+    <div style="display:inline-block">
+        Min Year <span id="minyrfb"></span> <br>
+        <input id="minyear" onchange="updminyr()" type="range" min="1000" max="9999"> 
+    </div>
+    <div style="display:inline-block">
+        Max Year <span id="maxyrfb"></span> <br>
+        <input id="maxyear" onchange="updmaxyr()" type="range" min="1000" max="9999">
+    </div>
+    <div style="display:inline-block">
+        Show results <span id="numresultsfb">1</span><br>
+        <input id="numresults" onchange="updnumresults()" type="range" min="1">
+    </div>
+
+    
     <table id="content"></table>
 
     <script>
@@ -216,12 +228,26 @@
         vals.forEach((kdrama) => {
             minYr = Math.min(minYr, kdrama[YR])
             maxYr = Math.max(maxYr, kdrama[YR])
-        }) 
-        console.log(minYr, maxYr)
+        })
+        document.getElementById("minyear").min = minYr
+        document.getElementById("minyear").max = maxYr
+        document.getElementById("minyear").value = minYr
+        document.getElementById("maxyear").min = minYr
+        document.getElementById("maxyear").max = maxYr
+        document.getElementById("maxyear").value = maxYr
+        
+        document.getElementById("minyrfb").innerHTML = minYr
+        document.getElementById("maxyrfb").innerHTML = maxYr
+        
+        
         
         let content = document.getElementById("content")
 
         populateTable()
+
+        document.getElementById("numresults").max = vals.length
+        document.getElementById('numresults').value = vals.length
+        document.getElementById("numresultsfb").innerHTML = vals.length + " / " + vals.length
 
         function populateTable() {
             content.innerHTML = ""
@@ -339,16 +365,72 @@
             document.getElementById("actordd").appendChild(opt)
         }
 
-        function filteractors() {
-            let actor = document.getElementById("actordd").value
-            vals.forEach((kdrama, i)=> {
-                if (actor == "" || kdrama[FEM]==actor || kdrama[MALE]==actor || kdrama[SUP].includes(actor))
-                    document.getElementById(i).style.display = ""
-                else
-                    document.getElementById(i).style.display = "none"
-            })
+        function matchesactor(kdrama, actor) {
+            return actor == "" || kdrama[FEM]==actor || kdrama[MALE]==actor || kdrama[SUP].includes(actor)
+        }
+        function matchesyear(kdrama, minyr, maxyr) {
+            return minyr <= kdrama[YR] && kdrama[YR] <= maxyr
         }
 
+        function filteractors() {
+            let numresults = document.getElementById('numresults').value
+            let showingall = numresults == document.getElementById('numresultsfb').innerHTML.split(" / ")[1]
+
+            let numfiltered = 0;
+            
+            let actor = document.getElementById("actordd").value
+            let minyr = document.getElementById("minyear").value
+            let maxyr = document.getElementById("maxyear").value
+
+            vals.forEach((kdrama, i)=> {
+                if (matchesactor(kdrama, actor) && matchesyear(kdrama, minyr, maxyr)) {
+                    numfiltered++
+                    if (showingall || numfiltered <= numresults)
+                        document.getElementById(i).style.display = ""
+                    else
+                        document.getElementById(i).style.display = "none"
+                } else
+                    document.getElementById(i).style.display = "none"
+            })
+            document.getElementById('numresults').max = numfiltered
+            if (showingall) {
+                document.getElementById('numresults').value = numfiltered
+                document.getElementById("numresultsfb").innerHTML = numfiltered + " / " + numfiltered
+            } else {
+                document.getElementById('numresults').value = Math.min(numresults, numfiltered)
+                document.getElementById("numresultsfb").innerHTML = Math.min(numresults, numfiltered) + " / " + numfiltered
+            }
+        }
+
+        function updnumresults() {
+            populateTable()
+            document.getElementById("numresultsfb").innerHTML = document.getElementById("numresults").value + " / " + document.getElementById("numresults").max
+        }
+
+        function updminyr() {
+            let newmin = document.getElementById("minyear").value
+            let oldmax = document.getElementById("maxyear").value
+            let newmax = Math.max(oldmax, newmin)
+            document.getElementById("minyrfb").innerHTML = newmin
+            if (oldmax != newmax) {
+                document.getElementById('maxyear').value = newmax
+                document.getElementById("maxyrfb").innerHTML = newmax
+            }
+            document.getElementById("maxyear").min = newmin
+            populateTable()
+        }
+        function updmaxyr() {
+            let newmax = document.getElementById("maxyear").value
+            let oldmin = document.getElementById("minyear").value
+            let newmin = Math.min(oldmin, newmax)
+            document.getElementById("maxyrfb").innerHTML = newmax
+            if (oldmin != newmin) {
+                document.getElementById('minyear').value = newmin
+                document.getElementById("minyrfb").innerHTML = newmin
+            }
+            document.getElementById("minyear").max = newmax
+            populateTable()
+        }
 
             
 
