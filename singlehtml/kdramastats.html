@@ -149,34 +149,42 @@
             }
         </style>
     </head>
+
+    <div id="search">
+
+        <div style="display:inline-block">
+            Sort by <br>
+            <select id="sortdd" onchange="sortvals()">
+                <option value="score">Overall Score</option>
+                <option value="numsup">Num Supporting Charaters</option>
+                <option value="title">Title</option>
+                <option value="cry">Cryability</option>
+                <option value="year">Year</option>
+            </select>
+        </div>
+    
+        <div style="display:inline-block">
+            Find actor <br>
+            <select id="actordd" onchange="filteractors()">
+                <option></option>
+            </select>
+        </div>
+    
+        <div style="display:inline-block">
+            Min Year <span id="minyrfb"></span> <br>
+            <input id="minyear" onchange="updminyr()" type="range" min="1000" max="9999"> 
+        </div>
+        <div style="display:inline-block">
+            Max Year <span id="maxyrfb"></span> <br>
+            <input id="maxyear" onchange="updmaxyr()" type="range" min="1000" max="9999">
+        </div>
+        <div style="display:inline-block">
+            Show results <span id="numresultsfb">1</span><br>
+            <input id="numresults" onchange="updnumresults()" type="range" min="1">
+        </div>
+    </div>
     
 
-    Sort by
-    <select id="sortdd" onchange="sortvals()">
-        <option value="score">Overall Score</option>
-        <option value="numsup">Num Supporting Charaters</option>
-        <option value="title">Title</option>
-        <option value="cry">Cryability</option>
-        <option value="year">Year</option>
-    </select>
-
-    Find actor
-    <select id="actordd" onchange="filteractors()">
-        <option></option>
-    </select>
-
-    <div style="display:inline-block">
-        Min Year <span id="minyrfb"></span> <br>
-        <input id="minyear" onchange="updminyr()" type="range" min="1000" max="9999"> 
-    </div>
-    <div style="display:inline-block">
-        Max Year <span id="maxyrfb"></span> <br>
-        <input id="maxyear" onchange="updmaxyr()" type="range" min="1000" max="9999">
-    </div>
-    <div style="display:inline-block">
-        Show results <span id="numresultsfb">1</span><br>
-        <input id="numresults" onchange="updnumresults()" type="range" min="1">
-    </div>
 
     
     <div id="tableholder">
