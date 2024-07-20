@@ -260,7 +260,9 @@
                         if (i == ENDING) {
                             div.style.backgroundColor = "black"
                             div.onmousedown = () => {div.style.backgroundColor = "white"}
+                            div.ontouchstart  = () => {div.style.backgroundColor = "white"}
                             div.onmouseup = () => {div.style.backgroundColor = "black"}
+                            div.ontouchend = () => {div.style.backgroundColor = "black"}
                         }
                         td.appendChild(div)
                     }
