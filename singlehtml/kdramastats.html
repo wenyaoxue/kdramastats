@@ -137,6 +137,11 @@
                 border-radius: 10px;
                 padding: 5px;
             }
+
+            td div {
+                max-height: 150px;
+                overflow: auto;
+            }
         </style>
     </head>
     
@@ -147,6 +152,7 @@
         <option value="numsup">Num Supporting Charaters</option>
         <option value="title">Title</option>
         <option value="cry">Cryability</option>
+        <option value="year">Year</option>
     </select>
 
     Find actor
@@ -201,6 +207,15 @@
     ["Doctors", 2016, 20, actors.PSHYE, actors.KRW, [actors.YKS, actors.LSK], 1, "doctors hang out", "", "1 i stopped watching this one because i really could not stand it. so boring.", "3 i really didn't like the characters.", "", "", ""
     ]
 ]    
+        
+        let minYr = vals[0][YR]
+        let maxYr = vals[0][YR]
+        vals.forEach((kdrama) => {
+            minYr = Math.min(minYr, kdrama[YR])
+            maxYr = Math.max(maxYr, kdrama[YR])
+        }) 
+        console.log(minYr, maxYr)
+        
         let content = document.getElementById("content")
 
         populateTable()
@@ -219,28 +234,35 @@
                 tr.id = i
                 kdrama.forEach((attr, i)=>{
                     let td = document.createElement("td")
-                    if (i==3 || i ==4) {
+                    if (i==FEM || i == MALE) {
                         let div = document.createElement("div")
                         div.classList.add("actor")
                         div.innerHTML = attr
-                        div.ondblclick = () => {
+                        div.onclick = () => {
                             document.getElementById("actordd").value = attr
                             filteractors()
                         }
                         td.appendChild(div)
-                    } else if (i == 5) {
+                    } else if (i == SUP) {
                         attr.forEach((otherlead)=>{
                             let div = document.createElement("div")
                             div.classList.add("actor")
                             div.innerHTML = otherlead
-                            div.ondblclick = () => {
+                            div.onclick = () => {
                                 document.getElementById("actordd").value = otherlead
                                 filteractors()
                             }
                             td.appendChild(div)
                         })
                     } else {
-                        td.innerHTML = attr
+                        let div = document.createElement("div")
+                        div.innerHTML = attr
+                        if (i == ENDING) {
+                            div.style.backgroundColor = "black"
+                            div.onmousedown = () => {div.style.backgroundColor = "white"}
+                            div.onmouseup = () => {div.style.backgroundColor = "black"}
+                        }
+                        td.appendChild(div)
                     }
                     tr.appendChild(td)
                 })
@@ -267,7 +289,9 @@
         function compareCryability(a, b) {
             return b[CRYABILITY] - a[CRYABILITY]
         }
-
+        function compareYear(a, b) {
+            return b[YR] - a[YR]
+        }
 
         function sortNumSup() {
             vals.sort(compareNumSup)
@@ -289,12 +313,18 @@
             populateTable()
         }
         
+        function sortByYear() {
+            vals.sort(compareYear)
+            populateTable()
+        }
+        
         function sortvals() {
             switch (document.getElementById("sortdd").value) {
                 case "score": sortByScore(); break;
                 case "numsup": sortNumSup(); break;
                 case "cry": sortByCryability(); break;
-                case "title": sortByTitle(); 
+                case "title": sortByTitle(); break;
+                case "year": sortByYear();
             }
         }
 
