@@ -141,6 +141,7 @@
             td div {
                 max-height: 150px;
                 overflow: auto;
+                background-color: white;
             }
             #tableholder {
                 height: 90%;
@@ -310,6 +311,8 @@
                             div.onmouseup = () => {div.style.backgroundColor = "black"}
                             div.ontouchend = () => {div.style.backgroundColor = "black"}
                             div.onmouseleave = () => {div.style.backgroundColor = "black"}
+                        } else {
+                            div.onclick = () => {div.style.transform = div.style.transform == "scale(1)" ? "scale(1.4)" : "scale(1)"}
                         }
                         td.appendChild(div)
                     }
