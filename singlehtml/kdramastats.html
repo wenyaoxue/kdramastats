@@ -552,7 +552,6 @@
     })
     kdramastoedits[kdramatitle] = kdramaedits
   })
-  console.log(kdramastoedits)
 </script>
 
 <head>
@@ -599,6 +598,13 @@
 <div id="search">
 
   <div style="display:inline-block">
+    As featured in edit <br>
+    <select id="editdd" onchange="filtertable()">
+      <option></option>
+    </select>
+  </div>
+
+  <div style="display:inline-block">
     Sort by <br>
     <select id="sortdd" onchange="sortkdramareviews()">
       <option value="score">Overall Score</option>
@@ -611,7 +617,7 @@
 
   <div style="display:inline-block">
     Find actor <br>
-    <select id="actordd" onchange="filteractors()">
+    <select id="actordd" onchange="filtertable()">
       <option></option>
     </select>
   </div>
@@ -630,7 +636,8 @@
   </div>
 
   <button onclick="resettable()">reset table</button>
-</div>
+</div><br>
+<span id="editfb"></span>
 
 
 
@@ -676,7 +683,7 @@
           btn.innerHTML = attr
           btn.onclick = () => {
             document.getElementById("actordd").value = attr
-            filteractors()
+            filtertable()
           }
           td.appendChild(btn)
         } else if (i == SUP) {
@@ -685,7 +692,7 @@
             btn.innerHTML = otherlead
             btn.onclick = () => {
               document.getElementById("actordd").value = otherlead
-              filteractors()
+              filtertable()
             }
             td.appendChild(btn)
           })
@@ -712,7 +719,10 @@
         let btn = document.createElement("button")
         btn.innerHTML = edits[editInd].Title
         btn.onclick = () => {
-          console.log(edits[editInd])
+          
+          document.getElementById("editdd").value = editInd
+          filtertable()
+
         }
         td.appendChild(btn)
       })
@@ -721,7 +731,7 @@
 
       content.appendChild(tr)
     })
-    filteractors()
+    filtertable()
   }
 
   function compareNumSup(a, b) {
@@ -787,14 +797,30 @@
     document.getElementById("actordd").appendChild(opt)
   }
 
+  edits.forEach((edit, i)=>{
+      let opt = document.createElement("option")
+      opt.innerText = edit.Title
+      opt.value = i
+      document.getElementById("editdd").appendChild(opt)
+  })
+
+
   function matchesactor(kdrama, actor) {
     return actor == "" || kdrama[FEM] == actor || kdrama[MALE] == actor || kdrama[SUP].includes(actor)
   }
   function matchesyear(kdrama, minyr, maxyr) {
     return minyr <= kdrama[YR] && kdrama[YR] <= maxyr
   }
+  function matchesedit(kdrama, edit) {
+    return edit == "" || kdramastoedits[kdrama[TITLE]].includes(parseInt(edit))
+  }
 
-  function filteractors() {
+  function getEditDetail(edit) {
+    return "<a href='" + edit.Link+"'>"+edit.Title + ": " + edit.Character +" wyxtv edit#" +edit.Number + " " + edit.kdramas + "</a>"
+
+  }
+
+  function filtertable() {
     let numresults = document.getElementById('numresults').value
     let showingall = numresults == document.getElementById('numresultsfb').innerHTML.split(" / ")[1]
 
@@ -803,11 +829,15 @@
     let actor = document.getElementById("actordd").value
     let minyr = document.getElementById("minyear").value
     let maxyr = document.getElementById("maxyear").value
+    let edit = document.getElementById("editdd").value
+
+    if (edit != "")
+      document.getElementById("editfb").innerHTML = getEditDetail(edits[edit])
 
     let nextcolor = 0
 
     kdramareviews.forEach((kdrama, i) => {
-      if (matchesactor(kdrama, actor) && matchesyear(kdrama, minyr, maxyr)) {
+      if (matchesactor(kdrama, actor) && matchesyear(kdrama, minyr, maxyr) && matchesedit(kdrama, edit)) {
         numfiltered++
         if (showingall || numfiltered <= numresults) {
           document.getElementById(i).style.display = ""
@@ -862,6 +892,8 @@
 
   function resettable() {
     document.getElementById("actordd").value = ""
+    document.getElementById("editdd").value = ""
+    document.getElementById("editfb").innerHTML = ""
 
     document.getElementById("minyear").min = minYr
     document.getElementById("minyear").max = maxYr
