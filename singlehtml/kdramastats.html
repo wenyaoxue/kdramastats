@@ -715,6 +715,7 @@
       })
 
       let td = document.createElement("td")
+      let div = document.createElement("div")
       kdramastoedits[kdrama[TITLE]].forEach((editInd)=>{
         let btn = document.createElement("button")
         btn.innerHTML = edits[editInd].Title
@@ -724,8 +725,9 @@
           filtertable()
 
         }
-        td.appendChild(btn)
+        div.appendChild(btn)
       })
+      td.appendChild(div)
       tr.appendChild(td)
 
 
