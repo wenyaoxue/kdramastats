@@ -155,7 +155,7 @@
     TBI: "The Beauty Inside"
   }
 
-  let attrs = ["Title", "Yr", "Hrs", "Fem", "Male", "Other Leads", "/10", "Overview", "To Cry", "Plot Review", "Character Review", "Direction Review", "Acting Review", "Ending Review (Spoilers)"]
+  let attrs = ["Title", "Yr", "Hrs", "Fem", "Male", "Other Leads", "/10", "Overview", "To Cry", "Plot", "Characters", "Direction", "Acting", "Ending"]
   let TITLE = 0
   let YR = 1
   let HRS = 2
@@ -592,6 +592,7 @@
     .color1 {
       background-color: lightyellow;
     }
+    
   </style>
 </head>
 
@@ -608,10 +609,10 @@
     Sort by <br>
     <select id="sortdd" onchange="sortkdramareviews()">
       <option value="score">Overall Score</option>
-      <option value="numsup">Num Supporting Charaters</option>
       <option value="title">Title</option>
-      <option value="cry">Cryability</option>
       <option value="year">Year</option>
+      <option value="cry">Cryability</option>
+      <option value="numedits">Num Edits</option>
     </select>
   </div>
 
@@ -646,6 +647,12 @@
   <table id="content"></table>
 </div>
 
+<table>
+  <tr id="kdramareviewdetailsholder"><td colspan="15" id="kdramareviewdetails">
+
+  </td></tr>
+</table>
+
 <script>
 
   let minYr = kdramareviews[0][YR]
@@ -661,6 +668,34 @@
 
   resettable()
 
+  function getKdramaReview(kdrama) {
+    let retval = ""
+    if (kdrama[PLOT] != "")
+      retval += "Plot: " + kdrama[PLOT] + "<br><hr><br>"
+    if (kdrama[CHARACTER] != "")
+      retval += "Characters: " + kdrama[CHARACTER] + "<br><hr><br>"
+    if (kdrama[DIRECTION] != "")
+      retval += "Direction: " + kdrama[DIRECTION] + "<br><hr><br>"
+    if (kdrama[ACTING] != "")
+      retval += "Acting: " + kdrama[ACTING] + "<br><hr><br>"
+    return retval
+  }
+  function getEndingDiv(kdrama) {
+    let div = document.createElement("div")
+    if (kdrama[ENDING] != "")
+      div.innerHTML = "Ending: "
+    let span = document.createElement("span")
+    
+    span.style.backgroundColor = "black"
+    span.onmousedown = () => { span.style.backgroundColor = "white" }
+    span.ontouchstart = () => { span.style.backgroundColor = "white" }
+    span.onmouseup = () => { span.style.backgroundColor = "black" }
+    span.ontouchend = () => { span.style.backgroundColor = "black" }
+    span.onmouseleave = () => { span.style.backgroundColor = "black" }
+    span.innerHTML = kdrama[ENDING]
+    div.appendChild(span)
+    return div
+  }
   function populateTable() {
     content.innerHTML = ""
     let tr = document.createElement("tr")
@@ -699,15 +734,22 @@
         } else {
           let div = document.createElement("div")
           div.innerHTML = attr
-          if (i == ENDING) {
-            div.style.backgroundColor = "black"
-            div.onmousedown = () => { div.style.backgroundColor = "white" }
-            div.ontouchstart = () => { div.style.backgroundColor = "white" }
-            div.onmouseup = () => { div.style.backgroundColor = "black" }
-            div.ontouchend = () => { div.style.backgroundColor = "black" }
-            div.onmouseleave = () => { div.style.backgroundColor = "black" }
-          } else {
-            div.onclick = () => { div.style.transform = div.style.transform == "scale(1)" ? "scale(1.4)" : "scale(1)" }
+          if (i == TITLE) {
+            let btn = document.createElement("button")
+            btn.innerHTML = "see details"
+            btn.onclick = () => {
+              console.log(kdrama)
+              let details = document.getElementById("kdramareviewdetails")
+              details.innerHTML = getKdramaReview(kdrama)
+
+              details.appendChild(getEndingDiv(kdrama))
+
+              tr.parentNode.insertBefore(document.getElementById("kdramareviewdetailsholder"), tr.nextSibling);
+            }
+            div.appendChild(btn)
+          }
+          if (i == PLOT || i == CHARACTER || i == DIRECTION || i == ACTING || i == ENDING) {
+            div.innerHTML = attr.split(" ")[0]
           }
           td.appendChild(div)
         }
@@ -739,6 +781,9 @@
   function compareNumSup(a, b) {
     return b[SUP].length - a[SUP].length
   }
+  function compareNumEdits(a, b) {
+    return kdramastoedits[b[TITLE]].length - kdramastoedits[a[TITLE]].length
+  }
   function compareTitle(a, b) {
     if (a[TITLE] < b[TITLE]) {
       return -1;
@@ -755,11 +800,17 @@
     return b[CRYABILITY] - a[CRYABILITY]
   }
   function compareYear(a, b) {
+    console.log(b[YR], a[YR])
     return b[YR] - a[YR]
   }
 
   function sortNumSup() {
     kdramareviews.sort(compareNumSup)
+    populateTable()
+  }
+
+  function sortNumEdits() {
+    kdramareviews.sort(compareNumEdits)
     populateTable()
   }
 
@@ -790,6 +841,7 @@
       case "cry": sortByCryability(); break;
       case "title": sortByTitle(); break;
       case "year": sortByYear();
+      case "numedits": sortNumEdits(); break;
     }
   }
 
