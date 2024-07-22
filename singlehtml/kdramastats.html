@@ -647,7 +647,7 @@
   <table id="content"></table>
 </div>
 
-<table>
+<table id="detailsparkinglot">
   <tr id="kdramareviewdetailsholder"><td colspan="15" id="kdramareviewdetails">
 
   </td></tr>
@@ -696,6 +696,22 @@
     div.appendChild(span)
     return div
   }
+  function getEditsDiv(kdrama) {
+    let div = document.createElement("div")
+    div.innerHTML = "Featured in wyx tv edits: "
+    kdramastoedits[kdrama[TITLE]].forEach((editInd)=>{
+      let btn = document.createElement("button")
+      btn.innerHTML = edits[editInd].Title
+      btn.onclick = () => {
+        
+        document.getElementById("editdd").value = editInd
+        filtertable()
+
+      }
+      div.appendChild(btn)
+    })
+    return div
+  }
   function populateTable() {
     content.innerHTML = ""
     let tr = document.createElement("tr")
@@ -738,13 +754,20 @@
             let btn = document.createElement("button")
             btn.innerHTML = "see details"
             btn.onclick = () => {
-              console.log(kdrama)
-              let details = document.getElementById("kdramareviewdetails")
-              details.innerHTML = getKdramaReview(kdrama)
+              if (btn.innerHTML == "see details") {
+                let details = document.getElementById("kdramareviewdetails")
+                details.innerHTML = getKdramaReview(kdrama)
 
-              details.appendChild(getEndingDiv(kdrama))
+                details.appendChild(getEndingDiv(kdrama))
+                details.appendChild(getEditsDiv(kdrama))
 
-              tr.parentNode.insertBefore(document.getElementById("kdramareviewdetailsholder"), tr.nextSibling);
+                tr.parentNode.insertBefore(document.getElementById("kdramareviewdetailsholder"), tr.nextSibling);
+                btn.innerHTML = "hide details"
+              } else {
+                document.getElementById("kdramareviewdetails").innerHTML = ""
+                document.getElementById("detailsparkinglot").appendChild(document.getElementById("kdramareviewdetailsholder"))                
+                btn.innerHTML = "see details"
+              }
             }
             div.appendChild(btn)
           }
@@ -757,19 +780,8 @@
       })
 
       let td = document.createElement("td")
-      let div = document.createElement("div")
-      kdramastoedits[kdrama[TITLE]].forEach((editInd)=>{
-        let btn = document.createElement("button")
-        btn.innerHTML = edits[editInd].Title
-        btn.onclick = () => {
-          
-          document.getElementById("editdd").value = editInd
-          filtertable()
-
-        }
-        div.appendChild(btn)
-      })
-      td.appendChild(div)
+      if (kdrama[TITLE] in kdramastoedits)
+        td.innerHTML = kdramastoedits[kdrama[TITLE]].length
       tr.appendChild(td)
 
 
