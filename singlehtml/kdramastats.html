@@ -975,6 +975,9 @@
     document.getElementById("numresults").max = kdramareviews.length
     document.getElementById('numresults').value = kdramareviews.length
     document.getElementById("numresultsfb").innerHTML = kdramareviews.length + " / " + kdramareviews.length
+
+    document.getElementById("kdramareviewdetailsholder").appendChild(document.getElementById("kdramareviewdetails"))
+    document.getElementById("detailsparkinglot").appendChild(document.getElementById("kdramareviewdetailsholder"))
     populateTable()
   }
 
