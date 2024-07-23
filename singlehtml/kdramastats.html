@@ -171,6 +171,17 @@
   let ACTING = 12
   let ENDING = 13
 
+  function compareAlph(a, b, ind) {
+    if (a[ind] < b[ind])
+      return -1;
+    if (a[ind] > b[ind])
+      return 1;
+    return 0;
+  }
+  function compareEditTitle(a, b) {
+    return compareAlph(a, b, "Title")
+  }
+  
   let kdramareviews = [
     [kdramas.WYWS, 2017, 16, [actors.SUZY], [actors.LJS], [actors.JHI, actors.LSY], 11, "hong joo, a reporter, has dreams that show her snippets of the future, and she meets jae chan, a lawyer, who has the same ability. they work together to deal with a series of crimes.", 6, "10 beautifully written, extremely well thought through. a really interesting premise. elegantly connects back to itself, and loose ends tie up smoothly and unexpectedly, showcasing the work and thought of the writing. nothing happens for no reason.", "10 wonderful, great. i love them all. likeable, relatable, very human.", "", "10", ""],
     [kdramas.W, 2016, 16, [actors.HHJ], [actors.LJS], [], 10, "kang chul, the main character of a comic illustrated by oh yeon joo's father, is unaware that he is not 'real'. yeon joo finds herself in his world.", 7, "9 a wicked concept, definitely very interesting and engaging. plot is cool and really stimulating, makes you think. starts to get crazy after awhile.", "10 a strong and full cast, really well developed supporting characters", "", "", ""],
@@ -541,6 +552,7 @@
       "Link": ""
     }
   ]
+  edits.sort(compareEditTitle)
 
   let kdramastoedits = {} //kdramatitle -> [editindex, editindex, ...]
   kdramareviews.forEach((kdramareview)=>{
@@ -893,16 +905,7 @@
   function compareScore(a, b, ind) {
     return getScoreFromKdrama(b, ind) - getScoreFromKdrama(a, ind)
   }
-  function compareAlph(a, b, ind) {
-    if (a[ind] < b[ind])
-      return -1;
-    if (a[ind] > b[ind])
-      return 1;
-    return 0;
-  }
-  function compareEditTitle(a, b) {
-    return compareAlph(a, b, "Title")
-  }
+
 
   function compareNumSup(a, b) {
     return b[SUP].length - a[SUP].length
@@ -944,7 +947,6 @@
     document.getElementById("actordd").appendChild(opt)
   }
 
-  edits.sort(compareEditTitle)
   edits.forEach((edit, i)=>{
       let opt = document.createElement("option")
       opt.innerText = edit.Title
