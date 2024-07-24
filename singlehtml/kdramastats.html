@@ -155,7 +155,6 @@
     TBI: "The Beauty Inside"
   }
 
-  let attrs = ["Title", "Yr", "Hrs", "Aud%", "Fem", "Male", "Other Leads", "/10", "Overview", "To Cry", "Plot", "Characters", "Direction", "Acting", "Ending"]
   let TITLE = 0
   let YR = 1
   let HRS = 2
@@ -552,8 +551,7 @@
       "Number": "",
       "Link": ""
     }
-  ]
-  edits.sort(compareEditTitle)
+  ].sort(compareEditTitle)
 
   let kdramastoedits = {} //kdramatitle -> [editindex, editindex, ...]
   kdramareviews.forEach((kdramareview)=>{
@@ -565,13 +563,27 @@
     })
     kdramastoedits[kdramatitle] = kdramaedits
   })
+
+  
+  let pngs = {
+    CALENDAR: "https://icons.veryicon.com/png/o/miscellaneous/face-monochrome-icon/calendar-249.png",
+    CLOCK: "https://cdn-icons-png.flaticon.com/512/105/105798.png",
+    AUDIENCECHART: "https://cdn4.iconfinder.com/data/icons/charts-soft/512/graph_chart_audience_chart_people_business_group-512.png",
+    SCORE: "https://www.iconpacks.net/icons/2/free-rating-icon-2796-thumb.png",
+    CRYEMOJI: "https://cdn1.iconfinder.com/data/icons/emoji-set-glyph/100/emoji_crying_cry_tears_upset_sad-512.png",
+    PLOT: "https://static.thenounproject.com/png/2965948-200.png", 
+    AVATAR: "https://icons.veryicon.com/png/o/miscellaneous/standard/avatar-15.png",
+    DIRECTING: "https://icons.iconarchive.com/icons/roundicons/100-free-solid/256/director-icon.png",
+    ACTINGMASKS: "https://static.thenounproject.com/png/2337401-200.png",
+    FASTFORWARD: "https://static-00.iconduck.com/assets.00/fast-forward-icon-512x284-wrx8cfns.png"
+  }
 </script>
 
 <head>
   <style>
     th,
     td {
-      border: 1px solid red;
+      border: 1px solid black;
       border-radius: 4px;
       padding: 2px;
     }
@@ -610,7 +622,7 @@
       display: none;
     }
 
-    th img {
+    img {
       width: 20px;
       height: 20px;
     }
@@ -618,9 +630,6 @@
     #github, #youtube {
       float: right;
       margin-left: 10px;
-      width: 20px;
-      height: 20px;
-
     }
   </style>
 </head>
@@ -628,7 +637,7 @@
 <div id="search">
 
   <div style="display:inline-block">
-    As featured in edit <br>
+    As featured in edit <img src="https://icons.veryicon.com/png/o/miscellaneous/taoist-music/clear-26.png" onclick="document.getElementById('editdd').value='';filtertable()"><br>
     <select id="editdd" onchange="filtertable()">
       <option></option>
     </select>
@@ -655,7 +664,7 @@
   </div>
 
   <div style="display:inline-block">
-    Find actor <br>
+    Find actor <img src="https://icons.veryicon.com/png/o/miscellaneous/taoist-music/clear-26.png" onclick="document.getElementById('actordd').value='';filtertable()"> <br>
     <select id="actordd" onchange="filtertable()">
       <option></option>
     </select>
@@ -676,7 +685,7 @@
 
   <button onclick="resettable()">reset table</button>
 
-  <a href="https://github.com/wenyaoxue/kdramastats/blob/main/singlehtml/kdramastats.html"><img id="github" src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg"></a>
+  <a href="https://github.com/wenyaoxue/kdramastats/tree/main/singlehtml"><img id="github" src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg"></a>
   <a href="https://www.youtube.com/channel/UC6CkVOVhu8dKzJNfiGxtfoA"><img id="youtube" src="https://cdn-icons-png.flaticon.com/512/152/152810.png"></a>
 
   <br>
@@ -686,7 +695,7 @@
 
 <table id="detailsparkinglot">
   <tr id="kdramareviewdetailsholder">
-    <td colspan="15" id="kdramareviewdetails">
+    <td colspan="16" id="kdramareviewdetails">
       <b>
         <span id="kdramareviewdetails_title"></span>
       </b>
@@ -778,26 +787,25 @@
     return "<img src='"+src+"' onclick=\"setSort('"+sortval+"')\">"
   }
 
-
-  function getHeader(attr) {
-    switch(attr) {
-      case "/10": return getImgHTML("https://www.iconpacks.net/icons/2/free-rating-icon-2796-thumb.png", "score")
-      case "Plot": return getImgHTML("https://static.thenounproject.com/png/2965948-200.png", "plot");
-      case "To Cry": return getImgHTML("https://cdn1.iconfinder.com/data/icons/emoji-set-glyph/100/emoji_crying_cry_tears_upset_sad-512.png", "cry")
-      case "Characters": return getImgHTML("https://icons.veryicon.com/png/o/miscellaneous/standard/avatar-15.png", "character")
-      case "Direction": return getImgHTML("https://icons.iconarchive.com/icons/roundicons/100-free-solid/256/director-icon.png", "direction")
-      case "Acting": return getImgHTML("https://static.thenounproject.com/png/2337401-200.png", "acting")
-      case "Ending": return getImgHTML("https://static-00.iconduck.com/assets.00/fast-forward-icon-512x284-wrx8cfns.png", "ending")
-      case "Yr": return getImgHTML("https://icons.veryicon.com/png/o/miscellaneous/face-monochrome-icon/calendar-249.png", "year")
-      case "Hrs": return getImgHTML("https://cdn-icons-png.flaticon.com/512/105/105798.png", "hours")
-    }
-    return attr
+  function createElement(tag, innerHTML) {
+    let ele = document.createElement(tag)
+    ele.innerHTML = innerHTML
+    return ele
   }
+
+  function boldText(str, bold) {
+    return (bold ? "<b>" : "") + str + (bold ? "</b>" : "")
+  }
+
   function getExpandedTitle() {
     return document.getElementById("kdramareviewdetails_title").innerHTML
   }
+
+  function getSortVal() {
+    return document.getElementById("sortdd").value
+  }
   function checkSort(i) {
-    let sortval = document.getElementById("sortdd").value
+    let sortval = getSortVal()
     return (sortval == "plot" && i == PLOT) ||
            (sortval == "character" && i == CHARACTER) ||
            (sortval == "direction" && i == DIRECTION) ||
@@ -819,95 +827,96 @@
     
     content.innerHTML = ""
     let tr = document.createElement("tr")
-    attrs.forEach((attr) => {
-      let th = document.createElement("th")
-      th.innerHTML = getHeader(attr)
-      tr.appendChild(th)
-    })
-    let th = document.createElement("th")
-    th.innerHTML = "Edits"
-    tr.appendChild(th)
+    
+    tr.appendChild(createElement("th", "<span onclick=\"setSort('title')\">Title</span>"))
+    tr.appendChild(createElement("th", getImgHTML(pngs.CALENDAR, "year")))
+    tr.appendChild(createElement("th", getImgHTML(pngs.CLOCK, "hours")))
+    tr.appendChild(createElement("th", getImgHTML(pngs.AUDIENCECHART, "audscore")))
+    tr.appendChild(createElement("th", "Female"))
+    tr.appendChild(createElement("th", "Male"))
+    tr.appendChild(createElement("th", "Other leads"))
+    tr.appendChild(createElement("th", getImgHTML(pngs.SCORE, "score")))
+    tr.appendChild(createElement("th", "Overview"))
+    tr.appendChild(createElement("th", getImgHTML(pngs.CRYEMOJI, "cry")))
+    tr.appendChild(createElement("th", getImgHTML(pngs.PLOT, "plot")))
+    tr.appendChild(createElement("th", getImgHTML(pngs.AVATAR, "character")))
+    tr.appendChild(createElement("th", getImgHTML(pngs.DIRECTING, "direction")))
+    tr.appendChild(createElement("th", getImgHTML(pngs.ACTINGMASKS, "acting")))
+    tr.appendChild(createElement("th", getImgHTML(pngs.FASTFORWARD, "ending")))
+    tr.appendChild(createElement("th", "<span onclick=\"setSort('numedits')\">Edits</span>"))
+
     content.appendChild(tr)
+
     kdramareviews.forEach((kdrama, i) => {
       let tr = document.createElement("tr")
       tr.id = i
-      kdrama.forEach((attr, i) => {
-        console.log(kdrama[TITLE])
-        let td = document.createElement("td")
-        if (i == FEM || i == MALE || i == SUP) {
-          console.log(i)
-          attr.forEach((actor) => {
-            let btn = document.createElement("button")
-            btn.innerHTML = actor
-            btn.onclick = () => {
-              document.getElementById("actordd").value = actor
-              filtertable()
-            }
-            td.appendChild(btn)
-          })
-        } else {
-          let div = document.createElement("div")
-          div.innerHTML = attr
-          if (i == TITLE) {
-            let btn = document.createElement("button")
-            btn.innerHTML = "see details"
-            btn.id = "exp_" + attr.replaceAll(" ", "_").replaceAll(",","")
-            btn.onclick = () => {
-              if (btn.innerHTML == "see details") {
-                let titlespan = document.getElementById("kdramareviewdetails_title")
-                let oldtitle = titlespan.innerHTML
-                if (oldtitle != "") {
-                  document.getElementById("exp_" + oldtitle.replaceAll(" ", "_").replaceAll(",","")).innerHTML = "see details"
-                }
-                titlespan.innerHTML = kdrama[TITLE]
-                document.getElementById("kdramareviewdetails_subtitle").innerHTML = kdrama[YR] + " | " + kdrama[HRS] + " hrs | "
-                
-                let details = document.getElementById("kdramareviewdetails_content")
-                details.innerHTML = getKdramaReview(kdrama)
-                details.appendChild(getEndingDiv(kdrama))
-                details.appendChild(getEditsDiv(kdrama))
 
-                tr.parentNode.insertBefore(document.getElementById("kdramareviewdetailsholder"), tr.nextSibling);
-                btn.innerHTML = "hide details"
-              } else {
-                document.getElementById("kdramareviewdetails_title").innerHTML = ""
-                document.getElementById("kdramareviewdetails_subtitle").innerHTML = ""
-                document.getElementById("kdramareviewdetails_content").innerHTML = ""
-                document.getElementById("detailsparkinglot").appendChild(document.getElementById("kdramareviewdetailsholder"))                
-                btn.innerHTML = "see details"
-              }
-            }
-            div.appendChild(btn)
+      let titletd = createElement("td", boldText(kdrama[TITLE], getSortVal()=="title"))
+      let btn = document.createElement("button")
+      btn.innerHTML = "see details"
+      btn.id = "exp_" + kdrama[TITLE].replaceAll(" ", "_").replaceAll(",","")
+      btn.onclick = () => {
+        if (btn.innerHTML == "see details") {
+          let titlespan = document.getElementById("kdramareviewdetails_title")
+          let oldtitle = titlespan.innerHTML
+          if (oldtitle != "") {
+            document.getElementById("exp_" + oldtitle.replaceAll(" ", "_").replaceAll(",","")).innerHTML = "see details"
           }
-          if (i == PLOT || i == CHARACTER || i == DIRECTION || i == ACTING || i == ENDING) {
-            let bold = checkSort(i)
-            let score = getScoreFromString(attr)
-            let scoreExists = score != -1
-            div.innerHTML = (bold ? "<b>" : "") + (scoreExists ? score : "") + (bold ? "</b>" : "")
-          }
-          if (i == SCORE || i == CRYABILITY) {
-            let bold = checkSort(i)
-            div.innerHTML = (bold ? "<b>" : "") + div.innerHTML + (bold ? "</b>" : "")
-          }
-          td.appendChild(div)
+          titlespan.innerHTML = kdrama[TITLE]
+          document.getElementById("kdramareviewdetails_subtitle").innerHTML = kdrama[YR] + " | " + kdrama[HRS] + " hrs | "
+          
+          let details = document.getElementById("kdramareviewdetails_content")
+          details.innerHTML = getKdramaReview(kdrama)
+          details.appendChild(getEndingDiv(kdrama))
+          details.appendChild(getEditsDiv(kdrama))
+
+          tr.parentNode.insertBefore(document.getElementById("kdramareviewdetailsholder"), tr.nextSibling);
+          btn.innerHTML = "hide details"
+        } else {
+          document.getElementById("kdramareviewdetails_title").innerHTML = ""
+          document.getElementById("kdramareviewdetails_subtitle").innerHTML = ""
+          document.getElementById("kdramareviewdetails_content").innerHTML = ""
+          document.getElementById("detailsparkinglot").appendChild(document.getElementById("kdramareviewdetailsholder"))                
+          btn.innerHTML = "see details"
         }
+      }
+      titletd.appendChild(btn)
+      tr.appendChild(titletd)
+      tr.appendChild(createElement("td", boldText(kdrama[YR], getSortVal() == "year")))
+      tr.appendChild(createElement("td", boldText(kdrama[HRS], getSortVal() == "hours")))
+      tr.appendChild(createElement("td", boldText(kdrama[AUD], getSortVal() == "audscore")))
+      let actortypes = [FEM, MALE, SUP]
+      actortypes.forEach((actortype)=>{
+        let td = document.createElement("td")
+        kdrama[actortype].forEach((actor) => {
+          let btn = document.createElement("button")
+          btn.innerHTML = actor
+          btn.onclick = () => {
+            document.getElementById("actordd").value = actor
+            filtertable()
+          }
+          td.appendChild(btn)
+        })
         tr.appendChild(td)
       })
-
-      let td = document.createElement("td")
-      let sortedits = document.getElementById("sortdd").value == "numedits"
-      if (kdrama[TITLE] in kdramastoedits)
-        td.innerHTML = (sortedits ? "<b>":"") + kdramastoedits[kdrama[TITLE]].length + (sortedits ? "</b>":"")
-      tr.appendChild(td)
-
+      tr.appendChild(createElement("td", boldText(kdrama[SCORE], getSortVal() == "score")))
+      tr.appendChild(createElement("td", kdrama[OVERVIEW]))
+      tr.appendChild(createElement("td", boldText(kdrama[CRYABILITY], getSortVal() == "cry")))
+      let scoretypes = [PLOT, CHARACTER, DIRECTION, ACTING, ENDING]
+      let scoresortvals = ["plot", "character", "direction", "acting", "ending"]
+      scoretypes.forEach((scoretype, i)=>{
+        let td = document.createElement("td")
+        let score = getScoreFromString(kdrama[scoretype])
+        let scoreExists = score != -1
+        tr.appendChild(createElement("td", boldText(scoreExists ? score : "", getSortVal() == scoresortvals[i])))
+      })
+      tr.appendChild(createElement("td", boldText(kdramastoedits[kdrama[TITLE]].length, getSortVal() == "numedits")))
 
       content.appendChild(tr)
 
       if (expandedTitle != "" && expandedTitle == kdrama[TITLE]) {
         content.appendChild(document.getElementById("kdramareviewdetailsholder"));  
       }
-
-
     })
     filtertable()
   }
@@ -1023,23 +1032,20 @@
     let nextcolor = 0
 
     kdramareviews.forEach((kdrama, i) => {
+      let shown = false
       if (matchesactor(kdrama, actor) && matchesyear(kdrama, minyr, maxyr) && matchesedit(kdrama, edit)) {
         numfiltered++
         if (showingall || numfiltered <= numresults) {
           document.getElementById(i).style.display = ""
           document.getElementById(i).classList.add("color" + nextcolor)
           nextcolor = (nextcolor + 1) % 2
-          document.getElementById(i).classList.remove("color" + nextcolor)          
-          if (kdrama[TITLE] == getExpandedTitle()) {
-            document.getElementById("exp_" + getExpandedTitle().replaceAll(" ", "_").replaceAll(",","")).innerHTML = "hide details"
-          }
+          document.getElementById(i).classList.remove("color" + nextcolor)
+          shown = true;
         }
-        else {
-          document.getElementById(i).style.display = "none"
-          if (kdrama[TITLE] == getExpandedTitle()) {
-            document.getElementById("exp_" + getExpandedTitle().replaceAll(" ", "_").replaceAll(",","")).innerHTML = "see details"
-            parkDetails()
-          }
+      }
+      if (shown) {
+        if (kdrama[TITLE] == getExpandedTitle()) {
+          document.getElementById("exp_" + getExpandedTitle().replaceAll(" ", "_").replaceAll(",","")).innerHTML = "hide details"
         }
       } else {
         document.getElementById(i).style.display = "none"
@@ -1060,7 +1066,7 @@
   }
 
   function updnumresults() {
-    populateTable()
+    filtertable()
     document.getElementById("numresultsfb").innerHTML = document.getElementById("numresults").value + " / " + document.getElementById("numresults").max
   }
 
@@ -1097,12 +1103,10 @@
     document.getElementById("minyear").min = minYr
     document.getElementById("minyear").max = maxYr
     document.getElementById("minyear").value = minYr
+    document.getElementById("minyrfb").innerHTML = minYr
     document.getElementById("maxyear").min = minYr
     document.getElementById("maxyear").max = maxYr
     document.getElementById("maxyear").value = maxYr
-
-
-    document.getElementById("minyrfb").innerHTML = minYr
     document.getElementById("maxyrfb").innerHTML = maxYr
 
     document.getElementById("numresults").max = kdramareviews.length
