@@ -12,8 +12,9 @@ note: for mouse down, mouse up, mobile and desktop
     span.ontouchend = () => { span.style.backgroundColor = "black" }
     span.onmouseleave = () => { span.style.backgroundColor = "black" }
 ```
-or 
+not
 ```
+doesn't work on mobile:
     .spoiler {
       background-color: black;
     }
