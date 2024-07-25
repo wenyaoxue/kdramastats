@@ -584,74 +584,36 @@
 <head>
   <style>
     th, td {
-      border: 1px solid black;
-      border-radius: 4px;
       padding: 2px;
-    }
-
-    .actor {
-      border: 1px solid black;
-      border-radius: 10px;
-      padding: 5px;
-    }
-
-    td div {
-      max-height: 150px;
-      overflow: auto;
     }
     
     #search {
+      height: 10%;
       overflow: auto;
-      box-sizing: border-box;
     }
 
     #tableholder {
-      width: 100%;
+      height: 80%;
       overflow: auto;
-      box-sizing: border-box;
     }
 
     #footer {
-      display: flex;
-      justify-content: center;
-      
+      height: 6%;
       position: absolute;
       bottom: 0;
-      box-sizing: border-box;
     }
     #footer > div {
       display: flex;
       align-items: center;
     }
 
-    @media (max-width:960px) {
-      #search {
-        height: 5%;
-      }
-
-      #tableholder {
-        height: 82%;
-      }
-
-      #footer {
-        height: 9%;
-      }
+    .spoiler {
+      background-color: black;
     }
 
-    @media (min-width:960px) {
-      #search {
-        height: 10%;
-      }
-
-      #tableholder {
-        height: 80%;
-      }
-
-      #footer {
-        height: 6%;
-      }
+    .spoiler:active:hover {
+      background-color: floralwhite;
     }
-
 
 
 
@@ -702,6 +664,11 @@
 
     #search > div {
       display: inline-block;
+    }
+
+    #kdramareviewdetails {
+      background-color: #f1d8f6;
+      color: black;
     }
   </style>
 </head>
@@ -828,13 +795,9 @@
     if (kdrama[ENDING] != "")
       div.innerHTML = "Ending: " + (firstTokExists ? endFirstTok : "") + " "
     let span = document.createElement("span")
+    span.classList.add("spoiler")
     
-    span.style.backgroundColor = "white"
-    span.onmousedown = () => { span.style.backgroundColor = "black" }
-    span.ontouchstart = () => { span.style.backgroundColor = "black" }
-    span.onmouseup = () => { span.style.backgroundColor = "white" }
-    span.ontouchend = () => { span.style.backgroundColor = "white" }
-    span.onmouseleave = () => { span.style.backgroundColor = "white" }
+
     span.innerHTML = getReviewFromKdrama(kdrama, ENDING)
     div.appendChild(span)
     return div
