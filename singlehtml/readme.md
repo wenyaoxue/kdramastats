@@ -23,3 +23,5 @@ doesn't work on mobile:
       background-color: floralwhite;
     }
 ```
+figuring out sizing:
+as per [this answer](https://stackoverflow.com/a/41668690), body gets a margin by default
