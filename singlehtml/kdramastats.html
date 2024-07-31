@@ -789,9 +789,9 @@
               if (sortvals[i] == "")
                 tr.appendChild(createElement("th", "<span>" + sortdescs[i] + "</span>"))
               else
-                tr.appendChild(createElement("th", "<span onclick=\"setSort('" + sortvals[i] + "')\">" + sortdescs[i] + "</span>"))
+                tr.appendChild(createElement("th", "<button><span onclick=\"setSort('" + sortvals[i] + "')\">" + sortdescs[i] + "</span></button>"))
             } else {
-              tr.appendChild(createElement("th", "<img src='" + headerpng + "' onclick=\"setSort('" + sortvals[i] + "')\">"))
+              tr.appendChild(createElement("th", "<button><img src='" + headerpng + "' onclick=\"setSort('" + sortvals[i] + "')\"></button>"))
             }
           })
         </script>
@@ -820,7 +820,7 @@
     }
 
     function getKdramaSubtitle(kdrama) {
-      return kdrama[YR] + " | " + kdrama[HRS] + " hrs | " +
+      return "<b>" + kdrama[SCORE] + "/10</b><br> "+ kdrama[YR] + " | " + kdrama[HRS] + " hrs | " +
         kdrama[AUD] + "% audience share | Starring " + 
         kdrama[FEM].join(" and ") + 
         ((kdrama[FEM].length == 0 || kdrama[MALE].length == 0) ? "" : " opposite ") +
@@ -971,7 +971,14 @@
     }
 
     function compareNum(a, b, ind) {
-      return b[ind] - a[ind]
+      let sortedDiff = b[ind] - a[ind]
+      if (sortedDiff != 0) 
+        return sortedDiff
+      //secondary sort is score if primary is not score, otherwise plot
+      if (ind != SCORE)
+        return b[SCORE] - a[SCORE]
+      else
+        return b[PLOT] - a[PLOT]
     }
     function getScoreFromString(str) {
       let tok = str.split(" ")[0]
