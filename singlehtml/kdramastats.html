@@ -831,7 +831,7 @@
       }
       #kdramaposter {
         max-width:100%;
-        max-height:100%;
+        max-height:400px;
         width: auto;
         height: auto;
       }
@@ -851,15 +851,26 @@
 
       #kdramareviewsimg, #kdramareviewstext {
         display: inline-block;
+        padding: 10px;
+      }
+      #kdramareviewstext {
+        max-height: 500px;
+        overflow: auto;
+      }
+      #kdramareviewsimg {
+        text-align: center;
       }
       #kdramareviewdetails, #actordetails {
         background-color: #f1d8f6;
         color: black;
       }
 
-      #actordetails > div {
+      #actordetails > div, #kdramareviewdetails {
         display: flex;
         align-items: center;
+      }
+      #actordetails > div > * {
+        padding: 10px;
       }
     </style>
   </head>
@@ -939,7 +950,7 @@
     <div id="tableholder">
       <table id="detailsparkinglot">
         <tr id="kdramareviewdetailsholder">
-          <td colspan="16" id="kdramareviewdetails">
+          <td colspan="16" ><div id="kdramareviewdetails">
             <div id="kdramareviewstext">
               <b><span id="kdramareviewdetails_title"></span></b> |
               <span id="kdramareviewdetails_subtitle"></span>
@@ -950,7 +961,7 @@
             <div id="kdramareviewsimg">
 
             </div>
-          </td>
+          </div></td>
         </tr>
       </table>
       <table>
@@ -1102,7 +1113,7 @@
             document.getElementById("kdramareviewstext").style.width="70%"
             document.getElementById("kdramareviewsimg").style.width="28%"
             let asianwikikey = asianwiki[kdrama[TITLE]].key
-            document.getElementById("kdramareviewsimg").innerHTML = "<a id='actorlink' href='https://asianwiki.com/"+asianwikikey+"#Trailers'>AsianWiki: " + asianwikikey.replaceAll("_"," ") + "</a>" +
+            document.getElementById("kdramareviewsimg").innerHTML = "<a id='actorlink' href='https://asianwiki.com/"+asianwikikey+"#Trailers'>AsianWiki: " + asianwikikey.replaceAll("_"," ") + "</a><br>" +
               "<img id='kdramaposter' src='"+asianwiki[kdrama[TITLE]].img+"''>"
           } else {
             document.getElementById("kdramareviewdetails_title").innerHTML = ""
@@ -1116,7 +1127,7 @@
         tr.appendChild(titletd)
         tr.appendChild(createElement("td", boldText(kdrama[YR], checkSortVal(YR))))
         tr.appendChild(createElement("td", boldText(kdrama[HRS], checkSortVal(HRS))))
-        tr.appendChild(createElement("td", boldText(kdrama[AUD], checkSortVal(AUD))))
+        tr.appendChild(createElement("td", boldText(kdrama[AUD]+"%", checkSortVal(AUD))))
         let actortypes = [FEM, MALE, SUP]
         actortypes.forEach((actortype) => {
           let td = document.createElement("td")
@@ -1312,8 +1323,8 @@
           text.innerHTML += " - no details yet"
       }
       if (actor != "")
-        text.innerHTML += "<br>" + 
-              " <a id='clearactorlink' onclick=\"document.getElementById('actordd').value='';filtertable();\">Clear actor filter</a>"
+        text.innerHTML += "<br><br>" + 
+              " <button id='clearactorlink' onclick=\"document.getElementById('actordd').value='';filtertable();\">Clear actor filter</button>"
       div.appendChild(text)
 
       document.getElementById("actordetails").appendChild(div)
