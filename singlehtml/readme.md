@@ -25,3 +25,5 @@ doesn't work on mobile:
 ```
 figuring out sizing:
 as per [this answer](https://stackoverflow.com/a/41668690), body gets a margin by default
+
+note: a lot of embedded videos showing as unavailable on local, but not once published (ie using github preview link)
