@@ -171,7 +171,7 @@
       CARETDOWN: "https://icons.veryicon.com/png/o/miscellaneous/mirror-icon/caretdown-1.png"
     }
 
-    //indexes for kdrama reviews, sortvals, sortdescs, and headerpngs
+    //indexes for kdrama reviews, sortvals, sortnames, and headerpngs
     let TITLE = 0
     let YR = 1
     let HRS = 2
@@ -203,7 +203,9 @@
     }
 
     let sortvals = ["title", "year", "hours", "audscore", "", "", "", "score", "", "cry", "plot", "character", "direction", "acting", "ending", "numedits"]
-    let sortdescs = ["Title", "Year", "Length (Hours)", "Audience %", "Female", "Male", "Other leads", "Overall Score", "Overview", "Cryability", "Plot Score", "Character Score", "Direction Score", "Acting Score", "Ending Score", "#Edits"]
+    let sortnames = ["Title", "Year", "Length (Hours)", "Audience %", "Female", "Male", "Other leads", "Overall Score", "Overview", "Cryability", "Plot Score", "Character Score", "Direction Score", "Acting Score", "Ending Score", "#Edits"]
+    let sortdescs = ["series title", "original release year", "approximate total length in hours", "average audience share (in korea, i think, i just googled) as a percentage", "female lead actress", "male lead actor", "other primary lead actors", "quality of the kdrama as a whole", "general summary of the premise, concept, and style", "likelihood of the kdrama to reduce you to tears, on average over the course of the entire series", "strength of the storyline (cohesive, interesting, thoughtful) - depth and care with which the plot points and subject matter are handled", "enjoyability (likability with exceptions) of the cast", "influence of choices made to frame the kdrama, such as editing, music, composition, etc.", "(minimal) thoughts on the contributions of the actors", "effectiveness and manner of the finale (last episode with exceptions) in concluding the storylines, conceptually and emotionally", "number of videos that the kdrama is included in on wyx tv (my kdrama edit youtube channel lol)"]
+    
     let headerpngs = ["NONE", pngs.CALENDAR, pngs.CLOCK, pngs.AUDIENCECHART, "NONE", "NONE", "NONE", pngs.SCORE, "NONE", pngs.CRYEMOJI, pngs.PLOT, pngs.AVATAR, pngs.DIRECTING, pngs.ACTINGMASKS, pngs.FASTFORWARD, "NONE"]
     let kdramadetails = [
         ["WYWS",2017,16,8.6,["SUZY"],["LJS"],["JHI","LSY"],11,"hong joo, a reporter, has dreams that show her snippets of the future, and she meets jae chan, a lawyer, who has the same ability. they work together to deal with a series of crimes.",6,"10 beautifully written, extremely well thought through. a really interesting premise. elegantly connects back to itself, and loose ends tie up smoothly and unexpectedly, showcasing the work and thought of the writing. nothing happens for no reason.","10 wonderful, great. i love them all. likeable, relatable, very human.","","10","","While_You_Were_Sleeping_(2017)","https://asianwiki.com/images/1/1f/While_You_Were_Sleeping-CP1-2.jpg"],
@@ -612,7 +614,15 @@
    "Number": null,
    "Link": "",
    "Embed": ""
- }
+ },
+ {
+    "Title": "i like mondays",
+    "Character": "female lead",
+    "kdramas": ["HDL"],
+    "Number": 45,
+    "Link": "https://www.youtube.com/watch?v=tqdum1m--hA",
+    "Embed": "https://www.youtube.com/embed/tqdum1m--hA?si=sYCQX9JdLjCjVO2m"
+  }
 ].sort(compareEditTitle)
 
     let kdramastoedits = {} //kdramatitle -> [editindex, editindex, ...]
@@ -757,6 +767,50 @@
         height: 300px;
       }
     </style>
+    <style id="modalstyles">
+      body {font-family: Arial, Helvetica, sans-serif;}
+      
+      /* The Modal (background) */
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      }
+      
+      /* Modal Content */
+      .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        color: black;
+        text-align: center;
+      }
+      
+      /* The Close Button */
+      .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      
+      .close:hover,
+      .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      </style>
   </head>
 
   <body id="page">
@@ -772,6 +826,14 @@
         return opt
       }
     </script>
+
+    <div id="myModal" class="modal">
+
+      <!-- Modal content -->
+      <div class="modal-content">
+      </div>
+
+    </div>
 
     <div id="search">
       <div>
@@ -791,9 +853,9 @@
         Sort by <br>
         <select id="sortdd" onchange="populateTable()"></select>
         <script id="populatesortdd">
-          sortdescs.forEach((sortdesc, i) => {
+          sortnames.forEach((sortname, i) => {
             if (sortvals[i] != "")
-              document.getElementById("sortdd").appendChild(createOption(sortvals[i], sortdesc))
+              document.getElementById("sortdd").appendChild(createOption(sortvals[i], sortname))
           })
           document.getElementById("sortdd").value = sortvals[SCORE]
         </script>
@@ -851,11 +913,11 @@
           headerpngs.forEach((headerpng, i) => {
             if (headerpng == "NONE") {
               if (sortvals[i] == "")
-                tr.appendChild(createElement("th", "<span>" + sortdescs[i] + "</span>"))
+                tr.appendChild(createElement("th", "<span>" + sortnames[i] + "</span>"))
               else
-                tr.appendChild(createElement("th", "<span onclick=\"setSort('" + sortvals[i] + "')\">" + sortdescs[i] + "</span>"))
+                tr.appendChild(createElement("th", "<span onclick=\"setSort('" + i + "')\">" + sortnames[i] + "</span>"))
             } else {
-              tr.appendChild(createElement("th", "<img src='" + headerpng + "' onclick=\"setSort('" + sortvals[i] + "')\">"))
+              tr.appendChild(createElement("th", "<img src='" + headerpng + "' onclick=\"setSort('" + i + "')\">"))
             }
           })
         </script>
@@ -1017,9 +1079,52 @@
     let content = document.getElementById("content")
     resettable()
 
-    function setSort(sortval) {
-      document.getElementById("sortdd").value = sortval
-      populateTable()
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+    function setSort(sorti) {
+      let sortval = sortvals[sorti]
+      let sortname = sortnames[sorti]
+      let sortpng = headerpngs[sorti]
+      let sortdesc = sortdescs[sorti]
+      modal = document.getElementById('myModal')
+      modal.style.display = "block";
+      
+      modalcontent = document.getElementsByClassName('modal-content')[0]
+      modalcontent.innerHTML = ""
+
+      if (sortpng != "NONE") {
+        let img = document.createElement("img")
+        img.src = sortpng
+        img.style.marginRight = "5px"
+        modalcontent.appendChild(img)
+      }
+      modalcontent.innerHTML += sortname 
+      if ((sorti >= CRYABILITY && sorti <= ENDING) || sorti == SCORE)
+        modalcontent.innerHTML += " - out of ten"
+      modalcontent.innerHTML += "<br>" + sortdesc
+      if ((sorti >= CRYABILITY && sorti <= ENDING)) {
+        modalcontent.innerHTML += "<br><br>Complete information for the kdrama currently sorted at the top of this list ("+kdramas[kdramadetails[0][TITLE]]+"):<br>";
+        modalcontent.innerHTML += kdramadetails[0][sorti]
+      }
+      modalcontent.innerHTML += "<br><br>"
+
+      let sortbutton = createElement("button", "Sort By " + sortname)
+      sortbutton.onclick = () => {
+        document.getElementById("sortdd").value = sortval
+        populateTable()
+        modal.style.display = "none";
+      }
+      sortbutton.style.marginRight = "10px"
+      modalcontent.appendChild(sortbutton)
+
+      let closebutton = createElement("button", "Close Popup")
+      closebutton.onclick = () => {
+        modal.style.display = "none";
+      }
+      modalcontent.appendChild(closebutton)
     }
     function checkSortVal(i) {
       return document.getElementById("sortdd").value == sortvals[i]
@@ -1103,11 +1208,11 @@
 
         content.appendChild(tr)
       })
-      
+      // no results notification row
       let nonerow = createElement("tr", "<td colSpan='16'>No results for this search.<br><button onclick='resettable()'>Reset filters</button></td>")
       nonerow.id = "nonerow"
       document.getElementById("content").appendChild(nonerow)
-      // hide rows according to search
+      // hide rows according to search, place details and no results notifications
       filtertable()
     }
     
@@ -1123,7 +1228,6 @@
     function filtertable() {
       let numresults = document.getElementById('numresults').value
       let showingall = numresults == document.getElementById('numresultsfb').innerHTML.split(" / ")[1]
-
       let numfiltered = 0;
 
       let actor = document.getElementById("actordd").value
@@ -1163,7 +1267,6 @@
         numresults = numfiltered
       document.getElementById('numresults').value = Math.min(numresults, numfiltered)
       document.getElementById("numresultsfb").innerHTML = Math.min(numresults, numfiltered) + " / " + numfiltered
-
       document.getElementById("nonerow").style.display = numfiltered == 0 ? "" : "none"
     }
 
