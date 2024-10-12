@@ -204,7 +204,7 @@
 
     let sortvals = ["title", "year", "hours", "audscore", "", "", "", "score", "", "cry", "plot", "character", "direction", "acting", "ending", "numedits"]
     let sortnames = ["Title", "Year", "Length (Hours)", "Audience %", "Female", "Male", "Other leads", "Overall Score", "Overview", "Cryability", "Plot Score", "Character Score", "Direction Score", "Acting Score", "Ending Score", "#Edits"]
-    let sortdescs = ["series title", "original release year", "approximate total length in hours", "average audience share (in korea, i think, i just googled) as a percentage", "female lead actress", "male lead actor", "other primary lead actors", "quality of the kdrama as a whole", "general summary of the premise, concept, and style", "likelihood of the kdrama to reduce you to tears, on average over the course of the entire series", "strength of the storyline (cohesive, interesting, thoughtful) - depth and care with which the plot points and subject matter are handled", "enjoyability (likability with exceptions) of the cast", "influence of choices made to frame the kdrama, such as editing, music, composition, etc.", "(minimal) thoughts on the contributions of the actors", "effectiveness and manner of the finale (last episode with exceptions) in concluding the storylines, conceptually and emotionally", "number of videos that the kdrama is included in on wyx tv (my kdrama edit youtube channel lol)"]
+    let sortdescs = ["series title", "original release year", "approximate total length in hours", "average audience share as a percentage", "female lead actress", "male lead actor", "other primary lead actors", "quality of the kdrama as a whole", "general summary of the premise, concept, and style", "likelihood of the kdrama to reduce you to tears, on average over the course of the entire series", "storyline strength, cohesion, and attraction - depth and care with which the plot points and subject matter are handled", "enjoyability (likability with exceptions) of the cast", "influence of choices made to frame the kdrama, such as editing, music, composition, etc.", "(minimal) thoughts on the contributions of the actors", "effectiveness and manner of the finale (last episode with exceptions) in concluding the storylines, conceptually and emotionally", "number of videos that the kdrama is included in on wyx tv (my kdrama edit youtube channel lol)"]
     
     let headerpngs = ["NONE", pngs.CALENDAR, pngs.CLOCK, pngs.AUDIENCECHART, "NONE", "NONE", "NONE", pngs.SCORE, "NONE", pngs.CRYEMOJI, pngs.PLOT, pngs.AVATAR, pngs.DIRECTING, pngs.ACTINGMASKS, pngs.FASTFORWARD, "NONE"]
     let kdramadetails = [
@@ -693,7 +693,7 @@
       }
     </style>
     <style id="specstyles">
-      #detailsparkinglot {
+      #detailsparkinglot, #modalparkinglot {
         display: none;
       }
       img:not(#actorimg):not(#kdramaposter) {
@@ -766,35 +766,42 @@
         width: 98%;
         height: 300px;
       }
+      body, table {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-size: 14px;
+      }
     </style>
-    <style id="modalstyles">
-      body {font-family: Arial, Helvetica, sans-serif;}
-      
+    <style id="modalstyles">      
       /* The Modal (background) */
       .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
-        padding-top: 100px; /* Location of the box */
+        display: none;
+        position: fixed;
+        z-index: 1;
+        padding-top: 100px;
         left: 0;
         top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        width: 100%;
+        height: 100%;
+        background-color: rgba(8,57,21,0.4);
       }
       
-      /* Modal Content */
       .modal-content {
         background-color: #fefefe;
         margin: auto;
         padding: 20px;
         border: 1px solid #888;
         width: 80%;
+        max-height: 80%;
+        overflow: auto;
         color: black;
         text-align: center;
         font-size: 14px;
+      }
+
+      #coldefs {
+        background-color: #a3ecb6;
+        margin: 5px;
+        padding: 5px;
       }
       </style>
   </head>
@@ -813,15 +820,56 @@
       }
     </script>
 
-    <div id="myModal" class="modal">
-
-      <!-- Modal content -->
-      <div class="modal-content">
-      </div>
+    <div id="infomodal" class="modal"
+      onclick="document.getElementById('infomodal').style.display = 'none';"
+    >
+      <div class="modal-content" onclick="event.stopPropagation()"></div>
       <script>
         let showPopupOnHeaderClick = true;
+        function togglePopupController(e) {
+          showPopupOnHeaderClick=!showPopupOnHeaderClick
+          showSettings()
+          e.stopPropagation();
+        }
+        function closepopup() {
+          modal.style.display = "none";
+        }
       </script>
+      <div id="modalparkinglot">
+        <div id="settingscontent">
+          <b>Kdramas According to Crystal</b><br>
+          managed reference sheet of opinions and edits of all the kdramas I've watched<br>
+          Please excuse human errors and inconsistencies, and sorry not sorry for the controversial opinions and bad edits.<br><br>
 
+          Interact with the table to sort, filter, and see more info!<br>
+          Click on header &#x2192; 
+          <b> <span id="headerclickresult"></span></b>
+
+          <button onclick="togglePopupController(event)" style="margin-left:5px">change</button>
+
+          <div id="coldefs">
+            <b>Table Column Definitions</b><br>
+            <hr>
+          </div>
+          <button onclick="closepopup()">Close Popup</button>
+          <script id="populateColdefs">
+            coldefshtml = ""
+            for (let i = 0; i < sortvals.length; i++) {
+              sortpng = headerpngs[i]
+              sortname = sortnames[i]
+              sortdesc = sortdescs[i]
+              if (sortpng != "NONE") {
+                coldefshtml += "<img src='"+sortpng+"' style='margin-right:5px'/>"
+              }
+              coldefshtml += "<b>" + sortname + "</b>"
+              if ((i >= CRYABILITY && i <= ENDING) || i == SCORE)
+              coldefshtml += " - out of ten"
+              coldefshtml += ": " + sortdesc + "<br>"
+            }
+            document.getElementById("coldefs").innerHTML+=coldefshtml
+          </script>
+        </div>
+      </div>
     </div>
 
     <div id="search">
@@ -877,50 +925,17 @@
       </div>
 
       <img id='reset' src="https://www.svgrepo.com/download/334208/reset.svg" onclick="resettable()">
-      <button id="settings" onclick="showSettings()">settings</button>
+      <img id="settings" src="https://www.svgrepo.com/show/526221/settings.svg"
+        onclick="showSettings()">
       <script id="setInfoModal">
         function showSettings() {      
-          modal = document.getElementById('myModal')
+          modal = document.getElementById('infomodal')
           modal.style.display = "block";
           modalcontent = document.getElementsByClassName('modal-content')[0]
-          modalcontent.innerHTML = "<b>A visualization of some kdramas</b><br>made by Crystal Wen - a store of my opinions on all the kdramas I've ever watched, and a showcase of my edits :0<br><br>"
-          modalcontent.innerHTML += "Find more opinions on kdramas by expanding, see info on actors or edits by filtering or clicking on buttons, and sort by stats by clicking on headers.<br>"
-          modalcontent.innerHTML += showPopupOnHeaderClick ? "See info popups when clicking on headers" : "Sort when clicking on headers"
-
-          let changebtn = createElement("button","Change")
-          changebtn.onclick = () => {
-            console.log("hey",showPopupOnHeaderClick)
-            showPopupOnHeaderClick = !showPopupOnHeaderClick
-            console.log("hey",showPopupOnHeaderClick)
-            showSettings()
-          }
-          modalcontent.appendChild(changebtn)
-
-          let everythingelse = "<br><br><b>Table Columns:</b><br>"
-          for (let i = 0; i < sortvals.length; i++) {
-            everythingelse += ""
-            
-            sortpng = headerpngs[i]
-            sortname = sortnames[i]
-            sortdesc = sortdescs[i]
-            if (sortpng != "NONE") {
-              everythingelse += "<img src='"+sortpng+"' style='margin-right:5px'/>"
-            }
-            everythingelse += sortname 
-            if ((i >= CRYABILITY && i <= ENDING) || i == SCORE)
-              everythingelse += " - out of ten"
-            everythingelse += ": " + sortdesc + "<br>"
-            
-          }
-
-          everythingelse += "<br><br>"
-          modalcontent.appendChild(createElement("div",everythingelse))
-          
-          let closebutton = createElement("button", "Close Popup")
-            closebutton.onclick = () => {
-              modal.style.display = "none";
-            }
-            modalcontent.appendChild(closebutton)
+          document.getElementById("modalparkinglot").appendChild(document.getElementById("settingscontent"))
+          modalcontent.innerHTML = ""
+          modalcontent.appendChild(document.getElementById("settingscontent"))
+          document.getElementById("headerclickresult").innerHTML = showPopupOnHeaderClick ? "see info popup" : "sort table by stat"
         }
 
       </script>
@@ -1115,37 +1130,37 @@
     let content = document.getElementById("content")
     resettable()
 
-    window.onclick = function(event) {
-      let modal = document.getElementById("myModal")
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
+    window.addEventListener('keyup', function(e) {
+        if (e.key === "Escape") { // escape key maps to keycode `27`
+            document.getElementById("infomodal").style.display = "none"
+        }
+    });
     function setSort(sorti) {
       if (showPopupOnHeaderClick) {
         let sortval = sortvals[sorti]
         let sortname = sortnames[sorti]
         let sortpng = headerpngs[sorti]
         let sortdesc = sortdescs[sorti]
-        modal = document.getElementById('myModal')
+        modal = document.getElementById('infomodal')
         modal.style.display = "block";
         
         modalcontent = document.getElementsByClassName('modal-content')[0]
+        document.getElementById("modalparkinglot").appendChild(document.getElementById("settingscontent"))
         modalcontent.innerHTML = ""
 
+        headerhtml = ""
         if (sortpng != "NONE") {
-          let img = document.createElement("img")
-          img.src = sortpng
-          img.style.marginRight = "5px"
-          modalcontent.appendChild(img)
+          headerhtml += "<img src='"+sortpng+"' style='margin-right:5px'/>"
         }
-        modalcontent.innerHTML += sortname 
+        headerhtml += sortname 
         if ((sorti >= CRYABILITY && sorti <= ENDING) || sorti == SCORE)
-          modalcontent.innerHTML += " - out of ten"
-        modalcontent.innerHTML += "<br>" + sortdesc
+          headerhtml += " - out of ten"
+        modalcontent.appendChild(createElement("h3", headerhtml))
+        modalcontent.innerHTML += sortdesc
         if ((sorti >= CRYABILITY && sorti <= ENDING)) {
-          modalcontent.innerHTML += "<br><br>Complete information for the kdrama currently sorted at the top of this list ("+kdramas[kdramadetails[0][TITLE]]+"):<br>";
-          modalcontent.innerHTML += kdramadetails[0][sorti]
+          modalcontent.innerHTML += "<br><br>"+kdramas[kdramadetails[0][TITLE]]+" " +sortname+ " (currently sorted at the top of this list)<br>";
+          let score = kdramadetails[0][sorti]
+          modalcontent.innerHTML += score == "" ? "None listed." : score
         }
         modalcontent.innerHTML += "<br><br>"
 
@@ -1159,9 +1174,7 @@
         modalcontent.appendChild(sortbutton)
 
         let closebutton = createElement("button", "Close Popup")
-        closebutton.onclick = () => {
-          modal.style.display = "none";
-        }
+        closebutton.onclick = closepopup
         modalcontent.appendChild(closebutton)
         modalcontent.appendChild(document.createElement("br"))
         let noMorePopupsButton = createElement("button", "Don't show me these popups")
@@ -1169,6 +1182,7 @@
           showPopupOnHeaderClick = false;
           modal.style.display = "none";
         }
+        noMorePopupsButton.style.marginTop = "5px"
         modalcontent.appendChild(noMorePopupsButton)
       } else {
         document.getElementById("sortdd").value = sortvals[sorti]
