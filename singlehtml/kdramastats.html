@@ -794,21 +794,7 @@
         width: 80%;
         color: black;
         text-align: center;
-      }
-      
-      /* The Close Button */
-      .close {
-        color: #aaaaaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-      }
-      
-      .close:hover,
-      .close:focus {
-        color: #000;
-        text-decoration: none;
-        cursor: pointer;
+        font-size: 14px;
       }
       </style>
   </head>
@@ -832,11 +818,14 @@
       <!-- Modal content -->
       <div class="modal-content">
       </div>
+      <script>
+        let showPopupOnHeaderClick = true;
+      </script>
 
     </div>
 
     <div id="search">
-      <div>
+      <div id="filterEditDiv">
         As featured in edit <img src="https://icons.veryicon.com/png/o/miscellaneous/taoist-music/clear-26.png"
           onclick="document.getElementById('editdd').value='';filtertable();populateEditDetails()"><br>
         <select id="editdd" onchange="filtertable();populateEditDetails()">
@@ -849,7 +838,7 @@
         </script>
       </div>
 
-      <div>
+      <div id="sortDiv">
         Sort by <br>
         <select id="sortdd" onchange="populateTable()"></select>
         <script id="populatesortdd">
@@ -861,7 +850,7 @@
         </script>
       </div>
 
-      <div>
+      <div id="filterActorDiv">
         Find actor <img src="https://icons.veryicon.com/png/o/miscellaneous/taoist-music/clear-26.png"
           onclick="document.getElementById('actordd').value='';filtertable();populateActorDetails()"> <br>
         <select id="actordd" onchange="filtertable();populateActorDetails()">
@@ -874,20 +863,67 @@
         </script>
       </div>
 
-      <div>
+      <div id="minYearDiv">
         Min Year <span id="minyrfb"></span> <br>
         <input id="minyear" onchange="updminyr()" type="range">
       </div>
-      <div>
+      <div id="maxYearDiv">
         Max Year <span id="maxyrfb"></span> <br>
         <input id="maxyear" onchange="updmaxyr()" type="range">
       </div>
-      <div>
+      <div id="showResultsDiv">
         Show results <span id="numresultsfb">1</span><br>
         <input id="numresults" onchange="updnumresults()" type="range" min="1">
       </div>
 
       <img id='reset' src="https://www.svgrepo.com/download/334208/reset.svg" onclick="resettable()">
+      <button id="settings" onclick="showSettings()">settings</button>
+      <script id="setInfoModal">
+        function showSettings() {      
+          modal = document.getElementById('myModal')
+          modal.style.display = "block";
+          modalcontent = document.getElementsByClassName('modal-content')[0]
+          modalcontent.innerHTML = "<b>A visualization of some kdramas</b><br>made by Crystal Wen - a store of my opinions on all the kdramas I've ever watched, and a showcase of my edits :0<br><br>"
+          modalcontent.innerHTML += "Find more opinions on kdramas by expanding, see info on actors or edits by filtering or clicking on buttons, and sort by stats by clicking on headers.<br>"
+          modalcontent.innerHTML += showPopupOnHeaderClick ? "See info popups when clicking on headers" : "Sort when clicking on headers"
+
+          let changebtn = createElement("button","Change")
+          changebtn.onclick = () => {
+            console.log("hey",showPopupOnHeaderClick)
+            showPopupOnHeaderClick = !showPopupOnHeaderClick
+            console.log("hey",showPopupOnHeaderClick)
+            showSettings()
+          }
+          modalcontent.appendChild(changebtn)
+
+          let everythingelse = "<br><br><b>Table Columns:</b><br>"
+          for (let i = 0; i < sortvals.length; i++) {
+            everythingelse += ""
+            
+            sortpng = headerpngs[i]
+            sortname = sortnames[i]
+            sortdesc = sortdescs[i]
+            if (sortpng != "NONE") {
+              everythingelse += "<img src='"+sortpng+"' style='margin-right:5px'/>"
+            }
+            everythingelse += sortname 
+            if ((i >= CRYABILITY && i <= ENDING) || i == SCORE)
+              everythingelse += " - out of ten"
+            everythingelse += ": " + sortdesc + "<br>"
+            
+          }
+
+          everythingelse += "<br><br>"
+          modalcontent.appendChild(createElement("div",everythingelse))
+          
+          let closebutton = createElement("button", "Close Popup")
+            closebutton.onclick = () => {
+              modal.style.display = "none";
+            }
+            modalcontent.appendChild(closebutton)
+        }
+
+      </script>
     </div>
 
     <div id="tableholder">
@@ -1080,51 +1116,64 @@
     resettable()
 
     window.onclick = function(event) {
+      let modal = document.getElementById("myModal")
       if (event.target == modal) {
         modal.style.display = "none";
       }
     }
     function setSort(sorti) {
-      let sortval = sortvals[sorti]
-      let sortname = sortnames[sorti]
-      let sortpng = headerpngs[sorti]
-      let sortdesc = sortdescs[sorti]
-      modal = document.getElementById('myModal')
-      modal.style.display = "block";
-      
-      modalcontent = document.getElementsByClassName('modal-content')[0]
-      modalcontent.innerHTML = ""
+      if (showPopupOnHeaderClick) {
+        let sortval = sortvals[sorti]
+        let sortname = sortnames[sorti]
+        let sortpng = headerpngs[sorti]
+        let sortdesc = sortdescs[sorti]
+        modal = document.getElementById('myModal')
+        modal.style.display = "block";
+        
+        modalcontent = document.getElementsByClassName('modal-content')[0]
+        modalcontent.innerHTML = ""
 
-      if (sortpng != "NONE") {
-        let img = document.createElement("img")
-        img.src = sortpng
-        img.style.marginRight = "5px"
-        modalcontent.appendChild(img)
-      }
-      modalcontent.innerHTML += sortname 
-      if ((sorti >= CRYABILITY && sorti <= ENDING) || sorti == SCORE)
-        modalcontent.innerHTML += " - out of ten"
-      modalcontent.innerHTML += "<br>" + sortdesc
-      if ((sorti >= CRYABILITY && sorti <= ENDING)) {
-        modalcontent.innerHTML += "<br><br>Complete information for the kdrama currently sorted at the top of this list ("+kdramas[kdramadetails[0][TITLE]]+"):<br>";
-        modalcontent.innerHTML += kdramadetails[0][sorti]
-      }
-      modalcontent.innerHTML += "<br><br>"
+        if (sortpng != "NONE") {
+          let img = document.createElement("img")
+          img.src = sortpng
+          img.style.marginRight = "5px"
+          modalcontent.appendChild(img)
+        }
+        modalcontent.innerHTML += sortname 
+        if ((sorti >= CRYABILITY && sorti <= ENDING) || sorti == SCORE)
+          modalcontent.innerHTML += " - out of ten"
+        modalcontent.innerHTML += "<br>" + sortdesc
+        if ((sorti >= CRYABILITY && sorti <= ENDING)) {
+          modalcontent.innerHTML += "<br><br>Complete information for the kdrama currently sorted at the top of this list ("+kdramas[kdramadetails[0][TITLE]]+"):<br>";
+          modalcontent.innerHTML += kdramadetails[0][sorti]
+        }
+        modalcontent.innerHTML += "<br><br>"
 
-      let sortbutton = createElement("button", "Sort By " + sortname)
-      sortbutton.onclick = () => {
-        document.getElementById("sortdd").value = sortval
-        populateTable()
-        modal.style.display = "none";
-      }
-      sortbutton.style.marginRight = "10px"
-      modalcontent.appendChild(sortbutton)
+        let sortbutton = createElement("button", "Sort By " + sortname)
+        sortbutton.onclick = () => {
+          document.getElementById("sortdd").value = sortval
+          populateTable()
+          modal.style.display = "none";
+        }
+        sortbutton.style.marginRight = "10px"
+        modalcontent.appendChild(sortbutton)
 
-      let closebutton = createElement("button", "Close Popup")
-      closebutton.onclick = () => {
-        modal.style.display = "none";
+        let closebutton = createElement("button", "Close Popup")
+        closebutton.onclick = () => {
+          modal.style.display = "none";
+        }
+        modalcontent.appendChild(closebutton)
+        modalcontent.appendChild(document.createElement("br"))
+        let noMorePopupsButton = createElement("button", "Don't show me these popups")
+        noMorePopupsButton.onclick = () => {
+          showPopupOnHeaderClick = false;
+          modal.style.display = "none";
+        }
+        modalcontent.appendChild(noMorePopupsButton)
+      } else {
+        document.getElementById("sortdd").value = sortvals[sorti]
+          populateTable()
       }
-      modalcontent.appendChild(closebutton)
     }
     function checkSortVal(i) {
       return document.getElementById("sortdd").value == sortvals[i]
