@@ -771,8 +771,7 @@
         font-size: 14px;
       }
     </style>
-    <style id="modalstyles">      
-      /* The Modal (background) */
+    <style id="modalstyles">
       .modal {
         display: none;
         position: fixed;
@@ -803,7 +802,15 @@
         margin: 5px;
         padding: 5px;
       }
-      </style>
+      hr {
+        border-bottom: black;
+        height: 0;
+      }
+      #coldefs div{
+        min-height: 30px;
+      }
+
+    </style>
   </head>
 
   <body id="page">
@@ -853,20 +860,20 @@
           </div>
           <button onclick="closepopup()">Close Popup</button>
           <script id="populateColdefs">
-            coldefshtml = ""
             for (let i = 0; i < sortvals.length; i++) {
               sortpng = headerpngs[i]
               sortname = sortnames[i]
               sortdesc = sortdescs[i]
+              let coldefhtml = ""
               if (sortpng != "NONE") {
-                coldefshtml += "<img src='"+sortpng+"' style='margin-right:5px'/>"
+                coldefhtml += "<img src='"+sortpng+"' style='margin-right:5px'/>"
               }
-              coldefshtml += "<b>" + sortname + "</b>"
+              coldefhtml += "<b>" + sortname + "</b>"
               if ((i >= CRYABILITY && i <= ENDING) || i == SCORE)
-              coldefshtml += " - out of ten"
-              coldefshtml += ": " + sortdesc + "<br>"
+              coldefhtml += " - out of ten"
+              coldefhtml += ": " + sortdesc + "<br>"
+              document.getElementById("coldefs").appendChild(createElement("div", coldefhtml))
             }
-            document.getElementById("coldefs").innerHTML+=coldefshtml
           </script>
         </div>
       </div>
@@ -1157,8 +1164,9 @@
           headerhtml += " - out of ten"
         modalcontent.appendChild(createElement("h3", headerhtml))
         modalcontent.innerHTML += sortdesc
+        modalcontent.innerHTML += "<hr>"
         if ((sorti >= CRYABILITY && sorti <= ENDING)) {
-          modalcontent.innerHTML += "<br><br>"+kdramas[kdramadetails[0][TITLE]]+" " +sortname+ " (currently sorted at the top of this list)<br>";
+          modalcontent.innerHTML += kdramas[kdramadetails[0][TITLE]]+" " +sortname+ " (currently sorted at the top of this list)<br>";
           let score = kdramadetails[0][sorti]
           modalcontent.innerHTML += score == "" ? "None listed." : score
         }
