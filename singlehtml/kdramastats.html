@@ -1,5 +1,13 @@
 <html>
   <script id="definevariables">
+    function compareAlph(a, b, ind) {
+      if (a[ind] < b[ind])
+        return -1;
+      if (a[ind] > b[ind])
+        return 1;
+      return 0;
+    }
+
     let actors = {
       AJH: {"name":"Ahn Jae Hyun","awkey":"Ahn_Jae-Hyeon","png":"https://asianwiki.com/images/9/95/Ahn_Jae-Hyeon-p02.jpg"},
       BARO: {"name":"Baro","awkey":"Baro","png":"https://asianwiki.com/images/3/3f/Cha_Sun-Woo-1992-p1.jpeg"},
@@ -171,7 +179,7 @@
       CARETDOWN: "https://icons.veryicon.com/png/o/miscellaneous/mirror-icon/caretdown-1.png"
     }
 
-    //indexes for kdrama reviews, sortvals, sortnames, and headerpngs
+    //indexes for kdrama reviews, sortnames, and headerpngs
     let TITLE = 0
     let YR = 1
     let HRS = 2
@@ -190,22 +198,12 @@
     let SORTEDITIND = 15
     let AWKEY = 15
     let PNG = 16
-
-    function compareAlph(a, b, ind) {
-      if (a[ind] < b[ind])
-        return -1;
-      if (a[ind] > b[ind])
-        return 1;
-      return 0;
-    }
-    function compareEditTitle(a, b) {
-      return compareAlph(a, b, "Title")
+    let sortable = (i) => {
+      return i != FEM && i != MALE && i != SUP && i != OVERVIEW
     }
 
-    let sortvals = ["title", "year", "hours", "audscore", "", "", "", "score", "", "cry", "plot", "character", "direction", "acting", "ending", "numedits"]
     let sortnames = ["Title", "Year", "Length (Hours)", "Audience %", "Female", "Male", "Other leads", "Overall Score", "Overview", "Cryability", "Plot Score", "Character Score", "Direction Score", "Acting Score", "Ending Score", "#Edits"]
-    let sortdescs = ["series title", "original release year", "approximate total length in hours", "average audience share as a percentage", "female lead actress", "male lead actor", "other primary lead actors", "quality of the kdrama as a whole", "general summary of the premise, concept, and style", "likelihood of the kdrama to reduce you to tears, on average over the course of the entire series", "storyline strength, cohesion, and attraction - depth and care with which the plot points and subject matter are handled", "enjoyability (likability with exceptions) of the cast", "influence of choices made to frame the kdrama, such as editing, music, composition, etc.", "(minimal) thoughts on the contributions of the actors", "effectiveness and manner of the finale (last episode with exceptions) in concluding the storylines, conceptually and emotionally", "number of videos that the kdrama is included in on wyx tv (my kdrama edit youtube channel lol)"]
-    
+    let sortdescs = ["series title", "original release year", "approximate total length in hours", "average share of the audience who watched this kdrama while it was airing (korean popularity), as a percentage", "female lead actress", "male lead actor", "other primary lead actors", "quality of the kdrama as a whole", "general summary of the premise, concept, and style", "likelihood of the kdrama to reduce you to tears, on average over the course of the entire series", "storyline strength, cohesion, and attraction - depth and care with which the plot points and subject matter are handled", "enjoyability (likability with exceptions) of the cast", "influence of choices made to frame the kdrama, such as editing, music, composition, etc.", "(minimal) thoughts on the contributions of the actors", "effectiveness and manner of the finale (last episode with exceptions) in concluding the storylines, conceptually and emotionally", "number of videos that the kdrama is included in on wyx tv (my kdrama edit youtube channel lol)"]
     let headerpngs = ["NONE", pngs.CALENDAR, pngs.CLOCK, pngs.AUDIENCECHART, "NONE", "NONE", "NONE", pngs.SCORE, "NONE", pngs.CRYEMOJI, pngs.PLOT, pngs.AVATAR, pngs.DIRECTING, pngs.ACTINGMASKS, pngs.FASTFORWARD, "NONE"]
     let kdramadetails = [
         ["WYWS",2017,16,8.6,["SUZY"],["LJS"],["JHI","LSY"],11,"hong joo, a reporter, has dreams that show her snippets of the future, and she meets jae chan, a lawyer, who has the same ability. they work together to deal with a series of crimes.",6,"10 beautifully written, extremely well thought through. a really interesting premise. elegantly connects back to itself, and loose ends tie up smoothly and unexpectedly, showcasing the work and thought of the writing. nothing happens for no reason.","10 wonderful, great. i love them all. likeable, relatable, very human.","","10","","While_You_Were_Sleeping_(2017)","https://asianwiki.com/images/1/1f/While_You_Were_Sleeping-CP1-2.jpg"],
@@ -623,52 +621,41 @@
     "Link": "https://www.youtube.com/watch?v=tqdum1m--hA",
     "Embed": "https://www.youtube.com/embed/tqdum1m--hA?si=sYCQX9JdLjCjVO2m"
   }
-].sort(compareEditTitle)
+].sort((a,b)=>compareAlph(a, b, "Title"))
 
     let kdramastoedits = {} //kdramatitle -> [editindex, editindex, ...]
     kdramadetails.forEach((kdramareview) => {
       let kdramatitle = kdramareview[TITLE]
       kdramastoedits[kdramatitle] = edits.map((edit, i) => ({i:i, kdramas:edit.kdramas})).filter(edit => edit.kdramas.includes(kdramatitle)).map(edit => edit.i)
     })
-
-
   </script>
 
   <head id="stylesholder">
     <style id="gencolorstyles">
       html, body {
         background-color: #083915;
-        color: white;
         height: 100%;
+        margin-top: 0;
+        margin-bottom: 0;
       }
-      #actordetails a, #editdetails a {
+      html, body, a {
         color: white;
       }
       #search img, #github, #youtube {
         filter: invert(1);
       }
-      body {
-        margin-top: 0;
-        margin-bottom: 0;
-      }
-
-      th, td {
+      th, td, #kdramareviewdetails a {
         padding: 2px;
+        color: black;
       }
-
       .color0 {
         background-color: lightblue;
-        color: black;
       }
-
       .color1 {
         background-color: lightyellow;
-        color: black;
       }
-
       th {
         background-color: #a3ecb6;
-        color: black;
         position: sticky;
         top: 0;
       }
@@ -678,12 +665,10 @@
         height: 81px;
         overflow: auto;
       }
-
       #tableholder {
         height: calc(100% - 111px);
         overflow: auto;
       }
-
       #footer {
         height: 30px;
         position: absolute;
@@ -696,7 +681,7 @@
       #detailsparkinglot, #modalparkinglot {
         display: none;
       }
-      img:not(#actorimg):not(#kdramaposter) {
+      img {
         width: 20px;
         height: 20px;
       }
@@ -716,15 +701,12 @@
         width: 30px;
         height: 30px;
       }
-
       #github, #youtube {
         margin: 5px;
       }
-
       #search>div {
         display: inline-block;
       }
-
       #kdramareviewsimg, #kdramareviewstext {
         display: inline-block;
         padding: 10px;
@@ -740,7 +722,6 @@
         background-color: #f1d8f6;
         color: black;
       }
-
       #actordetails > div, #kdramareviewdetails {
         display: flex;
         align-items: center;
@@ -771,6 +752,9 @@
         font-size: 14px;
       }
     </style>
+    <style id="sortedstyle">
+      #dummyrule {color: black}
+    </style>
     <style id="modalstyles">
       .modal {
         display: none;
@@ -782,13 +766,11 @@
         width: 100%;
         height: 100%;
         background-color: rgba(8,57,21,0.4);
-      }
-      
+      }      
       .modal-content {
         background-color: #fefefe;
         margin: auto;
         padding: 20px;
-        border: 1px solid #888;
         width: 80%;
         max-height: 80%;
         overflow: auto;
@@ -796,20 +778,27 @@
         text-align: center;
         font-size: 14px;
       }
-
       #coldefs {
         background-color: #a3ecb6;
         margin: 5px;
         padding: 5px;
       }
+      #coldefs > div {
+        display: flex;
+        align-items: center;
+        text-align: left;
+        padding: 0px;
+        margin:5px;
+      }
+      #coldefs > div > * {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        display: inline-block;
+      }
       hr {
         border-bottom: black;
         height: 0;
       }
-      #coldefs div{
-        min-height: 30px;
-      }
-
     </style>
   </head>
 
@@ -833,6 +822,7 @@
       <div class="modal-content" onclick="event.stopPropagation()"></div>
       <script>
         let showPopupOnHeaderClick = true;
+        let modal = document.getElementById('infomodal')
         function togglePopupController(e) {
           showPopupOnHeaderClick=!showPopupOnHeaderClick
           showSettings()
@@ -845,8 +835,9 @@
       <div id="modalparkinglot">
         <div id="settingscontent">
           <b>Kdramas According to Crystal</b><br>
-          managed reference sheet of opinions and edits of all the kdramas I've watched<br>
-          Please excuse human errors and inconsistencies, and sorry not sorry for the controversial opinions and bad edits.<br><br>
+          Managed reference sheet of opinions and edits of all the kdramas I've watched<br>
+          Note, some kdrama scores are missing or unexplained, as several of these reviews were written retroactively and/or a very long time ago. Sorry not sorry.<br>
+          <br><br>
 
           Interact with the table to sort, filter, and see more info!<br>
           Click on header &#x2192; 
@@ -860,19 +851,16 @@
           </div>
           <button onclick="closepopup()">Close Popup</button>
           <script id="populateColdefs">
-            for (let i = 0; i < sortvals.length; i++) {
+            for (let i = 0; i < sortnames.length; i++) {
               sortpng = headerpngs[i]
-              sortname = sortnames[i]
-              sortdesc = sortdescs[i]
-              let coldefhtml = ""
-              if (sortpng != "NONE") {
-                coldefhtml += "<img src='"+sortpng+"' style='margin-right:5px'/>"
-              }
-              coldefhtml += "<b>" + sortname + "</b>"
-              if ((i >= CRYABILITY && i <= ENDING) || i == SCORE)
-              coldefhtml += " - out of ten"
-              coldefhtml += ": " + sortdesc + "<br>"
-              document.getElementById("coldefs").appendChild(createElement("div", coldefhtml))
+              document.getElementById("coldefs").appendChild(createElement("div", 
+                ((sortpng != "NONE") ? 
+                  "<img src='"+sortpng+"' style='margin-right:5px'/>" : 
+                  "<p style='width:20px;margin-right:5px'/>&#x2022;</p>") +
+                "<p><b>" + sortnames[i] + "</b>" +
+                (((i >= CRYABILITY && i <= ENDING) || i == SCORE) ? " - out of ten" : "") +
+                ": " + sortdescs[i] + "</p>"
+              ))
             }
           </script>
         </div>
@@ -884,7 +872,7 @@
         As featured in edit <img src="https://icons.veryicon.com/png/o/miscellaneous/taoist-music/clear-26.png"
           onclick="document.getElementById('editdd').value='';filtertable();populateEditDetails()"><br>
         <select id="editdd" onchange="filtertable();populateEditDetails()">
-          <option></option>
+          <option value="">All edits</option>
         </select>
         <script id="populateeditdd">
           edits.forEach((edit, i) => {
@@ -898,10 +886,10 @@
         <select id="sortdd" onchange="populateTable()"></select>
         <script id="populatesortdd">
           sortnames.forEach((sortname, i) => {
-            if (sortvals[i] != "")
-              document.getElementById("sortdd").appendChild(createOption(sortvals[i], sortname))
+            if (sortable(i))
+              document.getElementById("sortdd").appendChild(createOption(i, sortname))
           })
-          document.getElementById("sortdd").value = sortvals[SCORE]
+          document.getElementById("sortdd").value = SCORE
         </script>
       </div>
 
@@ -909,7 +897,7 @@
         Find actor <img src="https://icons.veryicon.com/png/o/miscellaneous/taoist-music/clear-26.png"
           onclick="document.getElementById('actordd').value='';filtertable();populateActorDetails()"> <br>
         <select id="actordd" onchange="filtertable();populateActorDetails()">
-          <option></option>
+          <option value="">All actors</option>
         </select>
         <script id="populateactordd">
           for (let actor in actors) {
@@ -936,7 +924,6 @@
         onclick="showSettings()">
       <script id="setInfoModal">
         function showSettings() {      
-          modal = document.getElementById('infomodal')
           modal.style.display = "block";
           modalcontent = document.getElementsByClassName('modal-content')[0]
           document.getElementById("modalparkinglot").appendChild(document.getElementById("settingscontent"))
@@ -964,13 +951,13 @@
       </table>
       <table>
         <thead>
-          <tr id="tableheader"></tr>
+          <tr id="tableheader"><th>#</th></tr>
         </thead>
         <script id="populatethead">
           let tr = document.getElementById("tableheader")
           headerpngs.forEach((headerpng, i) => {
             if (headerpng == "NONE") {
-              if (sortvals[i] == "")
+              if (!sortable(i))
                 tr.appendChild(createElement("th", "<span>" + sortnames[i] + "</span>"))
               else
                 tr.appendChild(createElement("th", "<span onclick=\"setSort('" + i + "')\">" + sortnames[i] + "</span>"))
@@ -1116,21 +1103,24 @@
 
     function sortkdramadetailsvariable() {
       let compare
-      switch (document.getElementById("sortdd").value) {
-        case "audscore": compare = compareAudScore; break;
-        case "score": compare = compareOverallScore; break;
-        case "cry": compare = compareCryability; break;
-        case "title": compare = compareTitle; break;
-        case "year": compare = compareYear; break;
-        case "hours": compare = compareHours; break;
-        case "numedits": compare = compareNumEdits; break;
-        case "plot": compare = comparePlot; break;
-        case "character": compare = compareCharacter; break;
-        case "direction": compare = compareDirection; break;
-        case "acting": compare = compareActing; break;
-        case "ending": compare = compareEnding; break;
+      let sorti = document.getElementById("sortdd").value
+      switch (parseInt(sorti)) {
+        case AUD: compare = compareAudScore; break;
+        case SCORE: compare = compareOverallScore; break;
+        case CRYABILITY: compare = compareCryability; break;
+        case TITLE: compare = compareTitle; break;
+        case YR: compare = compareYear; break;
+        case HRS: compare = compareHours; break;
+        case SORTEDITIND: compare = compareNumEdits; break;
+        case PLOT: compare = comparePlot; break;
+        case CHARACTER: compare = compareCharacter; break;
+        case DIRECTION: compare = compareDirection; break;
+        case ACTING: compare = compareActing; break;
+        case ENDING: compare = compareEnding; break;
       }
+
       kdramadetails.sort(compare)
+      addSortStyle(sorti)
     }
   </script>
   <script id="updateviewfuncs">
@@ -1139,16 +1129,14 @@
 
     window.addEventListener('keyup', function(e) {
         if (e.key === "Escape") { // escape key maps to keycode `27`
-            document.getElementById("infomodal").style.display = "none"
+          closepopup();
         }
     });
     function setSort(sorti) {
       if (showPopupOnHeaderClick) {
-        let sortval = sortvals[sorti]
         let sortname = sortnames[sorti]
         let sortpng = headerpngs[sorti]
         let sortdesc = sortdescs[sorti]
-        modal = document.getElementById('infomodal')
         modal.style.display = "block";
         
         modalcontent = document.getElementsByClassName('modal-content')[0]
@@ -1174,9 +1162,9 @@
 
         let sortbutton = createElement("button", "Sort By " + sortname)
         sortbutton.onclick = () => {
-          document.getElementById("sortdd").value = sortval
+          document.getElementById("sortdd").value = sorti
           populateTable()
-          modal.style.display = "none";
+          closepopup()
         }
         sortbutton.style.marginRight = "10px"
         modalcontent.appendChild(sortbutton)
@@ -1188,17 +1176,22 @@
         let noMorePopupsButton = createElement("button", "Don't show me these popups")
         noMorePopupsButton.onclick = () => {
           showPopupOnHeaderClick = false;
-          modal.style.display = "none";
+          closepopup()
         }
         noMorePopupsButton.style.marginTop = "5px"
         modalcontent.appendChild(noMorePopupsButton)
       } else {
-        document.getElementById("sortdd").value = sortvals[sorti]
-          populateTable()
+        document.getElementById("sortdd").value = sorti
+        populateTable()
       }
     }
+    function addSortStyle(sorti) {
+        var style = document.getElementById('sortedstyle');
+        style.sheet.deleteRule(0)
+        style.sheet.insertRule("tr > td:nth-child("+(parseInt(sorti)+2)+") {background-color: #f1d8f6}")
+    }
     function checkSortVal(i) {
-      return document.getElementById("sortdd").value == sortvals[i]
+      return document.getElementById("sortdd").value == i
     }
 
     function populateTable() {
@@ -1211,8 +1204,8 @@
       // populate each kdrama table row, bolded value for sorted attribute
       kdramadetails.forEach((kdrama, i) => {
         let tr = document.createElement("tr")
-        tr.id = i
-
+        tr.id = "tr" + i
+        tr.appendChild(createElement("td",""))
         let titletd = createElement("td", boldText(kdramas[kdrama[TITLE]], checkSortVal(TITLE)) + " ")
         let btn = document.createElement("img")
         btn.src = pngs.CARETRIGHT
@@ -1312,21 +1305,22 @@
         if (matchesactor(kdrama, actor) && matchesyear(kdrama, minyr, maxyr) && matchesedit(kdrama, edit)) {
           numfiltered++
           if (showingall || numfiltered <= numresults) {
-            document.getElementById(i).style.display = ""
-            document.getElementById(i).classList.add("color" + nextcolor)
+            document.getElementById("tr"+i).style.display = ""
+            document.getElementById("tr"+i).classList.add("color" + nextcolor)
             nextcolor = (nextcolor + 1) % 2
-            document.getElementById(i).classList.remove("color" + nextcolor)
+            document.getElementById("tr"+i).classList.remove("color" + nextcolor)
             shown = true;
+            document.querySelector("#tr" + i + " > td").innerHTML = numfiltered
           }
         }
         if (shown) {
           if (kdramas[kdrama[TITLE]] == getExpandedTitle()) {
-            let tr = document.getElementById(i)
+            let tr = document.getElementById("tr"+i)
             document.getElementById("exp_" + getExpandedTitle().replaceAll(" ", "_").replaceAll(",", "")).src = pngs.CARETDOWN
             tr.parentNode.insertBefore(document.getElementById("kdramareviewdetailsholder"), tr.nextSibling);
           }
         } else {
-          document.getElementById(i).style.display = "none"
+          document.getElementById("tr"+i).style.display = "none"
           if (kdramas[kdrama[TITLE]] == getExpandedTitle()) {
             document.getElementById("exp_" + getExpandedTitle().replaceAll(" ", "_").replaceAll(",", "")).src = pngs.CARETRIGHT
             parkKdramaDetails()
