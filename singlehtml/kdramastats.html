@@ -203,7 +203,7 @@
     }
 
     let sortnames = ["Title", "Year", "Length (Hours)", "Audience %", "Female", "Male", "Other leads", "Overall Score", "Overview", "Cryability", "Plot Score", "Character Score", "Direction Score", "Acting Score", "Ending Score", "#Edits"]
-    let sortdescs = ["series title", "original release year", "approximate total length in hours", "average share of the audience who watched this kdrama while it was airing (korean popularity), as a percentage", "female lead actress", "male lead actor", "other primary lead actors", "quality of the kdrama as a whole", "general summary of the premise, concept, and style", "likelihood of the kdrama to reduce you to tears, on average over the course of the entire series", "storyline strength, cohesion, and attraction - depth and care with which the plot points and subject matter are handled", "enjoyability (likability with exceptions) of the cast", "influence of choices made to frame the kdrama, such as editing, music, composition, etc.", "(minimal) thoughts on the contributions of the actors", "effectiveness and manner of the finale (last episode with exceptions) in concluding the storylines, conceptually and emotionally", "number of videos that the kdrama is included in on wyx tv (my kdrama edit youtube channel lol)"]
+    let sortdescs = ["series title", "original release year", "approximate total length in hours", "average share of the audience who watched this kdrama while it was airing (korean popularity/mainstream-ness), as a percentage", "female lead actress", "male lead actor", "other primary lead actors", "quality of the kdrama as a whole", "general summary of the premise, concept, and style", "likelihood of the kdrama to reduce you to tears, on average over the course of the entire series", "storyline strength, cohesion, and attraction - depth and care with which the plot points and subject matter are handled", "enjoyability (likability with exceptions) of the cast", "influence of choices made to frame the kdrama, such as editing, music, composition, etc.", "(minimal) thoughts on the contributions of the actors", "effectiveness and manner of the finale (last episode with exceptions) in concluding the storylines, conceptually and emotionally", "number of videos that the kdrama is included in on wyx tv (my kdrama edit youtube channel lol)"]
     let headerpngs = ["NONE", pngs.CALENDAR, pngs.CLOCK, pngs.AUDIENCECHART, "NONE", "NONE", "NONE", pngs.SCORE, "NONE", pngs.CRYEMOJI, pngs.PLOT, pngs.AVATAR, pngs.DIRECTING, pngs.ACTINGMASKS, pngs.FASTFORWARD, "NONE"]
     let kdramadetails = [
         ["WYWS",2017,16,8.6,["SUZY"],["LJS"],["JHI","LSY"],11,"hong joo, a reporter, has dreams that show her snippets of the future, and she meets jae chan, a lawyer, who has the same ability. they work together to deal with a series of crimes.",6,"10 beautifully written, extremely well thought through. a really interesting premise. elegantly connects back to itself, and loose ends tie up smoothly and unexpectedly, showcasing the work and thought of the writing. nothing happens for no reason.","10 wonderful, great. i love them all. likeable, relatable, very human.","","10","","While_You_Were_Sleeping_(2017)","https://asianwiki.com/images/1/1f/While_You_Were_Sleeping-CP1-2.jpg"],
@@ -701,6 +701,12 @@
         width: 30px;
         height: 30px;
       }
+      #settings {
+        float: right;
+        margin: 10px;
+        width: 30px;
+        height: 30px;
+      }
       #github, #youtube {
         margin: 5px;
       }
@@ -978,9 +984,9 @@
     <div id="footer">
       made by Crystal Wen, to recommend kdramas and keep track of my videos. beware controversial opinions and bad edits.
       sources of truth (in regards to this chart):
-      <a href="https://github.com/coderystal/kdramastats/tree/main/v1"><img id="github"
+      <a href="https://github.com/coderystal/kdramastats/tree/main/v1" target="_blank"><img id="github"
           src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg"></a>
-      <a href="https://www.youtube.com/channel/UC6CkVOVhu8dKzJNfiGxtfoA"><img id="youtube"
+      <a href="https://www.youtube.com/channel/UC6CkVOVhu8dKzJNfiGxtfoA" target="_blank"><img id="youtube"
           src="https://cdn-icons-png.flaticon.com/512/152/152810.png"></a>
     </div>
 
@@ -1231,7 +1237,7 @@
             document.getElementById("kdramareviewstext").style.width="70%"
             document.getElementById("kdramareviewsimg").style.width="28%"
             let asianwikikey = kdrama[AWKEY]
-            document.getElementById("kdramareviewsimg").innerHTML = "<a id='actorlink' href='https://asianwiki.com/"+asianwikikey+"#Trailers'>AsianWiki: " + asianwikikey.replaceAll("_"," ") + "</a><br>" +
+            document.getElementById("kdramareviewsimg").innerHTML = "<a id='actorlink' href='https://asianwiki.com/"+asianwikikey+"#Trailers' target='_blank'>AsianWiki: " + asianwikikey.replaceAll("_"," ") + "</a><br>" +
               "<img id='kdramaposter' src='"+kdrama[PNG]+"''>"
           } else {
             document.getElementById("kdramareviewdetails_title").innerHTML = ""
@@ -1343,7 +1349,7 @@
       let text = document.createElement("div")
       text.innerHTML = (actor in actors ? actors[actor].name : actor) + "<br>"
       if (actor in actors) {
-        text.innerHTML += "<a id='actorlink' href='https://asianwiki.com/"+actors[actor].awkey+"'>AsianWiki: " + actors[actor].awkey.replaceAll("_", " ") + "</a>"
+        text.innerHTML += "<a id='actorlink' href='https://asianwiki.com/"+actors[actor].awkey+"' target='_blank'>AsianWiki: " + actors[actor].awkey.replaceAll("_", " ") + "</a>"
         let img = document.createElement("img")
         img.src = actors[actor].png
         img.id = "actorimg"
@@ -1360,7 +1366,7 @@
       document.getElementById("actordetails").appendChild(div)
     }
     function getEditDetail(edit) {
-      return "<a href='" + edit.Link + "'>" + edit.Title + " (wyx tv edit #" + edit.Number + ")</a><br>" +
+      return "<a href='" + edit.Link + "' target='_blank'>" + edit.Title + " (wyx tv edit #" + edit.Number + ")</a><br>" +
         "featuring <b>" + edit.Character + "</b> archetypes from " + edit.kdramas.length + " drama" + (edit.kdramas.length == 1 ? "" : "s") + ":<br>" + 
         edit.kdramas.map(kdrama => kdramas[kdrama]).join(", ")
 
